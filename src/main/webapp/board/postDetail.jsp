@@ -515,7 +515,7 @@
 	                		+"</div>"
 	                		+"<div class='row mx-2  comment-body'>"
 							+"<div class='col-10 comment-input'>"
-							+"<textarea id='modi_content_cmt' name='modi_comment_content' onkeydown='resize(this)' onkeyup='resize(this)'>"+cmt_dto.content +"</textarea>"
+							+"<textarea id='modi_content_cmt' class='modi_content_cmt' name='modi_comment_content' onkeydown='resize(this)' onkeyup='resize(this)'>"+cmt_dto.content +"</textarea>"
 							+"</div>"
 							+"<div class='col-2 comment-input'>"
 							+"<button type='button' id='btnReGo'  value='" + cmt_dto.comment_no + "' class='btn btn-dark'>Edit</button>"
