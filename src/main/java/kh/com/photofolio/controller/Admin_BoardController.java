@@ -30,17 +30,15 @@ import kh.com.photofolio.service.Admin_boardService;
 //게시물 조회 및 삭제 등의 유저와 관련된 기능을 컨트롤 하는 컨트롤러
 
 public class Admin_BoardController extends HttpServlet {
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		actionDo(request, response);
 	}
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		actionDo(request, response);
 	}
-
+	
 	protected void actionDo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("utf-8");
 		HttpSession session = request.getSession();
@@ -224,6 +222,9 @@ public class Admin_BoardController extends HttpServlet {
 			if (rs != -1)
 				response.sendRedirect("/toBoardManagement.admBo?currentPage=1");
 		} 
+	
+
+
 	}
 
 }

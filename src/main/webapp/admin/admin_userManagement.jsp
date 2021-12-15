@@ -22,7 +22,7 @@
     <!-- header import 링크 -->
     <script type="text/javascript">
         $(document).ready(function () {
-            $("#header").load("/resources/header/header_admin.jsp")
+        	 $("#header").load("/resources/header/header_admin.jsp");
         });
     </script>
     <style>

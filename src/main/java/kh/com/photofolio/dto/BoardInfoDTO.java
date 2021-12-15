@@ -5,6 +5,7 @@ import java.sql.Date;
 import oracle.net.aso.c;
 
 public class BoardInfoDTO {
+	int user_type;
 	String profilephoto_path;
 	int post_no;
 	String post_writer;
@@ -21,10 +22,11 @@ public class BoardInfoDTO {
 	int commentCnt;
 	
 	public BoardInfoDTO() {}
-	public BoardInfoDTO(String profilephoto_path, int post_no, String post_writer, String post_writer_nickname,
+	public BoardInfoDTO(int user_type, String profilephoto_path, int post_no, String post_writer, String post_writer_nickname,
 			String post_title, String post_content, Date post_createdDate, int post_view_count, int category_no,
 			int seq_file, String origin_name, String system_name, int likeCnt, int commentCnt) {
 		super();
+		this.user_type = user_type;
 		this.profilephoto_path = profilephoto_path;
 		this.post_no = post_no;
 		this.post_writer = post_writer;
@@ -150,6 +152,12 @@ public class BoardInfoDTO {
 	public void setCommentCnt(int commentCnt) {
 		this.commentCnt = commentCnt;
 	}
-
+	public int getUser_type() {
+		return user_type;
+	}
+	public void setUser_type(int user_type) {
+		this.user_type = user_type;
+	}
+	
 }
 

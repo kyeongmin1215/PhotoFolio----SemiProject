@@ -202,6 +202,7 @@
             height: 100%;
             text-align: center;
             padding-top:0.938rem; /*15px*/
+            
         }
         /*알림창 종 이미지 */
         #noticeBox>svg{
@@ -214,11 +215,12 @@
         #noticeBox>div{
             position: absolute;
             width:18.75rem; /*300px*/
-            height: 18.75rem; /*300px*/
-            background-color: blue;
+            height: auto; /*300px*/
             top:4.688rem; /*75px*/
             left:73.938rem; /*1183*/
             display: none;
+            background-color:white;
+            border:1px solid black;
         }
         /*업로드영역*/
         #uploadBox{
@@ -414,6 +416,41 @@
             -moz-transform: rotateX(-90deg);
             transform: rotateX(-90deg);
           }
+          
+          /*** notice영역 ***/
+
+.noti_table {
+    width: 100%;
+}
+.noti_userImg_wrapper {
+    width: 70px;
+}
+#noti_userImg {
+    width: 50px;
+    height: 50px;
+    border-radius: 75%;
+}
+.noti_msg {
+    width: 200px;
+}
+.noti_msg > span {
+    font-size: small;
+}
+.noti_delete {
+    margin: 10px;
+    text-align: right;
+}
+.noti_delete > img {
+    opacity: 70%;
+    cursor: pointer;
+}
+.noti_date {
+    width: 200px;
+    /* height: 25px; */
+}
+.noti_date > span {
+    font-size: small;
+}
 </style>
 </head>
 <body>
@@ -440,14 +477,18 @@
                 </div>
             </div>
             <!--알림창 버튼영역 (아이콘 클릭시 알림창 내려옴) + 비로그인시 숨김-->
-            <div id="noticeBox">
-            	<c:if test="${!empty loginSession}">
-	                <svg xmlns="http://www.w3.org/2000/svg" id="noticeImg" width="45" height="45" fill="currentColor" class="bi bi-bell" viewBox="0 0 16 16">
-	                    <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zM8 1.918l-.797.161A4.002 4.002 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4.002 4.002 0 0 0-3.203-3.92L8 1.917zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5.002 5.002 0 0 1 13 6c0 .88.32 4.2 1.22 6z"/>
-	                </svg> 
-	                <div id="notice">알림창</div>
-                </c:if>
-            </div>
+				<div id="noticeBox">
+					<c:if test="${!empty loginSession}">
+				      <svg xmlns="http://www.w3.org/2000/svg" id="noticeImg" width="45" height="45" fill="currentColor" class="bi bi-bell" viewBox="0 0 16 16">
+				          <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zM8 1.918l-.797.161A4.002 4.002 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4.002 4.002 0 0 0-3.203-3.92L8 1.917zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5.002 5.002 0 0 1 13 6c0 .88.32 4.2 1.22 6z"/>
+				      </svg> 
+				      <div id="notice">
+				      		<table class="noti_table">
+				      		</table>
+				            <!--동적 추가-->
+				        </div>
+				    </c:if>
+				</div>
             <!--업로드 버튼영역 + 비로그인시 숨김-->
             
 	            <div id="uploadBox">
@@ -550,51 +591,115 @@
         
         
         
-        /* function searchToggle(obj, evt){
-            var container = $(obj).closest('.search-wrapper');
-                if(!container.hasClass('active')){
-                    container.addClass('active');
-                    evt.preventDefault();
-                }
-                else if(container.hasClass('active') && $(obj).closest('.input-holder').length == 0){
-                    container.removeClass('active');
-                    // clear input
-                    container.find('.search-input').val('');
-                }
-        } */
-        //종버튼 클릭하면 알림창 나타나기/없어지기
-        $("#noticeImg").click(function(){
-            let submenu = $(this).next("div");
-            if(submenu.is(":visible")){
-                submenu.fadeOut();
-            }else{
-                submenu.fadeIn();
-            }
-        });
-        //로그인후 프로필 클릭하면 목록창이 나옴
-        $("#profilePhoto").click(function(){
-            let submenu = $(this).next("div");
-            if(submenu.is(":visible")){
-                submenu.fadeOut();
-            }else{
-                submenu.fadeIn();
-            }
-        });
-      //로고누르면 메인으로 
-        $("#logo").click(function(){
-            location.href="${pageContext.request.contextPath}/"
-        })
-        //My Infomation 누르면 개인정보페이지로 이동
-        $("#btnMyInfo").click(function(){
-            location.href="${pageContext.request.contextPath}/toMyPage.mem"
-        })
-        //로그인 버튼 누르면 로그인창 뜨도록
-        $(".loginBtn").click(function(){
-        	location.href="${pageContext.request.contextPath}/toLogin.mem"
-        })
-        $(".uploadBtn").click(function(){
-        	location.href="${pageContext.request.contextPath}/toInsertPost.bo"
-        })
+			        /* function searchToggle(obj, evt){
+			            var container = $(obj).closest('.search-wrapper');
+			                if(!container.hasClass('active')){
+			                    container.addClass('active');
+			                    evt.preventDefault();
+			                }
+			                else if(container.hasClass('active') && $(obj).closest('.input-holder').length == 0){
+			                    container.removeClass('active');
+			                    // clear input
+			                    container.find('.search-input').val('');
+			                }
+			        } */
+			        //종버튼 클릭하면 알림창 나타나기/없어지기
+			        $("#noticeImg").click(function(){
+			            let submenu = $(this).next("div");
+			            if(submenu.is(":visible")){
+			                submenu.fadeOut();
+			            }else{
+			                submenu.fadeIn();
+			            }
+			        });
+			        //로그인후 프로필 클릭하면 목록창이 나옴
+			        $("#profilePhoto").click(function(){
+			            let submenu = $(this).next("div");
+			            if(submenu.is(":visible")){
+			                submenu.fadeOut();
+			            }else{
+			                submenu.fadeIn();
+			            }
+			        });
+			      //로고누르면 메인으로 
+			        $("#logo").click(function(){
+			            location.href="${pageContext.request.contextPath}/"
+			        })
+			        //My Infomation 누르면 개인정보페이지로 이동
+			        $("#btnMyInfo").click(function(){
+			            location.href="${pageContext.request.contextPath}/toMyPage.mem"
+			        })
+			        //로그인 버튼 누르면 로그인창 뜨도록
+			        $(".loginBtn").click(function(){
+			        	location.href="${pageContext.request.contextPath}/toLogin.mem"
+			        })
+			        $(".uploadBtn").click(function(){
+			        	location.href="${pageContext.request.contextPath}/toInsertPost.bo"
+			        })
+			        
+			        $(document).ready(function() {
+			    getNoti(); // 로드되면 1회 실행
+			    setInterval(getNoti, 3000); // 3초마다 재실행
+			});
+			      
+			   let notiShare = "";
+			
+			function getNoti() {
+			    $.ajax({
+			        type: "get",
+			        url: "${pageContext.request.contextPath}/selectNotiProc.bo",
+			        dataType: "json"
+			    }).done(function(rs) {
+			        if(!(rs == "fail")) {
+			        	 $(".noti_table").empty(); // 기존 리스트 제거
+			            for (let noti of rs) {
+	                        let image = "";
+	                        if (noti.user_type == 3) { // kakao user
+	                            image = '<img id="noti_userImg" src="' + noti.profilephoto_path + '">';
+	                        } else {
+	                            image = '<img id="noti_userImg" src="/upload/' + noti.profilephoto_path + '">';
+	                        }
+	                        let notiList = '<tr>'
+	                            + '<td class="noti_userImg_wrapper">'
+	                            + image
+	                            + '</td>'
+	                            + '<td class="noti_msg">'
+	                            + '<span>' + noti.notiDto.noti_msg + '</span><br>'
+	                            + '<span>' + noti.notiDto.noti_date + '</span>'
+	                            + '</td>'
+	                            + '<td class="noti_delete">'
+	                            + '<img src="${pageContext.request.contextPath}/resources/imgTmp/trash.svg" id="' + noti.notiDto.noti_no + '">'
+	                            + '</td>'
+	                            + '</tr>';
+	                        notiShare = notiList; 
+	                        $(".noti_table").append(notiList); 
+			                
+			            }
+			        } else {
+			            console.log("수신 실패");
+			        }
+			    }).fail(function(e) {
+			        console.log(e);
+			    });
+			}
+			
+			// 알림 삭제
+			$(document).on("click", ".noti_delete > img", function(e) { // 바인딩 처리
+			    $.ajax({
+			        type: "post",
+			        url: "${pageContext.request.contextPath}/deleteNotiProc.bo",
+			        data: {
+			            noti_no: e.target.id
+			        }
+			    }).done(function(rs){
+			        console.log(rs);
+			        if(rs == "true") {
+			            $(e.target).parents("tr").remove();
+			        }
+			    }).fail(function(e){
+			        console.log(e);
+			    });
+			});
     </script>
 </body>
 </html>

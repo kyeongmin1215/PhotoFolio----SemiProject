@@ -70,6 +70,9 @@
 	border: none;
 }
 
+.writerInfo{
+    margin-left:10px;
+}
 .uploadBox {
 	width: 1000px;
 	margin: auto;
@@ -255,6 +258,9 @@
 									value="${dto.getPost_title() }" readonly>
 							</h2>
 						</div>
+						<div class="col-11 writerInfo">
+            				<span>by ${dto.getPost_writer_nickname() } || ${dto.getPost_createdDate() } || 조회수 ${dto.getPost_view_count() }</span>
+            			</div>
 					</div>
 				</div>
 
@@ -522,8 +528,9 @@
 			let data =  $("#modiCmtForm").serialize();
 			let value = $(this).val();
 			console.log("comment_no : "+value);
+			var index = $(".btnReGo").index(this);
 			console.log("index : "+index);
-			let content = $(".modi_content_cmt").eq(index);z
+			let content = $(".modi_content_cmt").eq(index);
 			console.log(content);
 			console.log(content.val());
 			$.ajax({

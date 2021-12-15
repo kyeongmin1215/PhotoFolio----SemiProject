@@ -583,7 +583,7 @@
             </div>
         </div>
         <div id="btnLogout">
-            <button type="button" class="custom-btn loginBtn"><span>Click!</span><span>Log Out</span>
+            <button type="button" class="custom-btn loginBtn"><span>Log Out</span><span>Log Out</span>
         </div>
     </div>
 

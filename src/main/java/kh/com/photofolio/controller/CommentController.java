@@ -13,9 +13,12 @@ import javax.servlet.http.HttpSession;
 
 import com.google.gson.Gson;
 
+import kh.com.photofolio.dao.BoardDAO;
 import kh.com.photofolio.dao.CommentDAO;
+import kh.com.photofolio.dao.NotiDAO;
 import kh.com.photofolio.dto.CommentDTO;
 import kh.com.photofolio.dto.CommentPlusDTO;
+import kh.com.photofolio.dto.NotiDTO;
 
 @WebServlet("*.co")
 public class CommentController extends HttpServlet {
@@ -52,6 +55,22 @@ public class CommentController extends HttpServlet {
 			HashMap<String, String> loginSession = (HashMap) session.getAttribute("loginSession");
 			String user_id = loginSession.get("user_id");
 			
+			/*** 알림 추가 ***/
+			BoardDAO daoBoard = new BoardDAO();
+			NotiDAO daoNoti = new NotiDAO();
+			try {
+				// 글 작성자 정보 가져오기
+				String post_writer = daoBoard.selectIdByNo(post_no);
+				// 알림 생성 메서드 호출
+				String noti_msg = loginSession.get("user_nickname") + "님이 당신의 글에 새 댓글을 달았습니다.";
+				if(daoNoti.insertNoti(new NotiDTO(0, user_id, post_writer, noti_msg, null)) > 0) {
+					System.out.println("댓글 알림 생성 완료");
+				} else {
+					System.out.println("댓글 알림 생성 실패");
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			
 			System.out.println("user_id : " + user_id);
 //			System.out.println("currentPage : " + currentPage);

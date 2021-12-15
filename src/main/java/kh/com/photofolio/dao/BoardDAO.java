@@ -251,29 +251,31 @@ public class BoardDAO {
 		}return null;
 	}
 	
-	public ArrayList<BoardInfoDTO> getBoardByWriter(String value) throws Exception{
-		String sql = "select profilephoto_path,  \r\n"
-				   + "post_no, post_writer,post_writer_nickname,post_title, post_content, post_createdDate, post_view_count,category_no,\r\n"
-				   + "seq_file, origin_name, system_name,\r\n"
-				   + "count(c.user_id) as \"좋아요수\", \r\n"
-				   + "count(comment_no) as \"댓글수\"\r\n"
-				   + "from tbl_post a \r\n"
-				   + "inner join tbl_user b on (a.post_writer = b.user_id)\r\n"
-				   + "left outer join  tbl_like c using(post_no) \r\n"
-				   + "inner join tbl_file d using (post_no) \r\n"
-				   + "left outer join tbl_comment e using(post_no)\r\n"
-				   + "group by profilephoto_path,  \r\n"
-				   + "post_no, post_writer,post_writer_nickname,post_title, post_content, post_createdDate, post_view_count,category_no,\r\n"
-				   + "seq_file, origin_name, system_name\r\n"
-				   + "having post_writer_nickname like '%"+value+"%' or post_writer like '%"+value+"%' "
-				   + "or post_title like '%"+value+"%' or post_content like '%"+value+"%'"
-				   + "order by post_no desc";
+	public ArrayList<BoardInfoDTO> getBoardByBoardInfo(String value) throws Exception{
+		String sql = "select user_type, profilephoto_path, \r\n"
+				+ " post_no, post_writer,post_writer_nickname,post_title, post_content, post_createdDate, post_view_count,category_no,\r\n"
+				+ "seq_file, origin_name, system_name,\r\n"
+				+ "count(c.user_id) as \"좋아요수\", \r\n"
+				+ "count(comment_no) as \"댓글수\"\r\n"
+				+ "from tbl_post a \r\n"
+				+ "inner join tbl_user b on (a.post_writer = b.user_id)\r\n"
+				+ "left outer join  tbl_like c using(post_no) \r\n"
+				+ "inner join tbl_file d using (post_no) \r\n"
+				+ "left outer join tbl_comment e using(post_no)\r\n"
+				+ "group by user_type, profilephoto_path,  \r\n"
+				+ "post_no, post_writer,post_writer_nickname,post_title, post_content, post_createdDate, post_view_count,category_no,\r\n"
+				+ "seq_file, origin_name, system_name\r\n"
+				+ "having user_type!=2 and (post_writer_nickname like '%"+value+"%' or post_writer like '%"+value+"%' "
+				+ "or post_title like '%"+value+"%' or post_content like '%"+value+"% ')"
+				+ "order by post_no desc";
+				
 		try(Connection con = this.getConnection();
 			PreparedStatement pstmt = con.prepareStatement(sql);){
 			ResultSet rs = pstmt.executeQuery();
 			ArrayList<BoardInfoDTO> list = new ArrayList<>();
 			while(rs.next()) {
 				BoardInfoDTO dto = new BoardInfoDTO();
+				dto.setUser_type(rs.getInt("user_type"));
 				dto.setProfilephoto_path(rs.getString("profilephoto_path"));
 				dto.setPost_no(rs.getInt("post_no"));
 				dto.setPost_writer(rs.getString("post_writer"));
@@ -286,8 +288,8 @@ public class BoardDAO {
 				dto.setSeq_file(rs.getInt("seq_file"));
 				dto.setOrigin_name(rs.getString("origin_name"));
 				dto.setSystem_name(rs.getString("system_name"));
-				dto.setLikeCnt(rs.getInt(13));
-				dto.setCommentCnt(rs.getInt(14));
+				dto.setLikeCnt(rs.getInt(14));
+				dto.setCommentCnt(rs.getInt(15));
 				list.add(dto);
 			}
 			if(list!=null) return list;
@@ -296,23 +298,22 @@ public class BoardDAO {
 	
 	//
 	public ArrayList<BoardInfoDTO> getBoardByCategory(int category) throws Exception{
-		String sql = "select profilephoto_path,  \r\n" 
-				+"post_no, post_writer,post_writer_nickname,post_title, post_content, \r\n"
-				+"post_createdDate, post_view_count,category_no, \r\n"
-				+"seq_file, origin_name, system_name, \r\n"
-				+"count(c.user_id) as \"좋아요수\", \r\n"
+		String sql = "select user_type, profilephoto_path, \r\n"
+				+ " post_no, post_writer,post_writer_nickname,post_title, post_content, post_createdDate, post_view_count,category_no,\r\n"
+				+ "seq_file, origin_name, system_name,\r\n"
+				+ "count(c.user_id) as \"좋아요수\", \r\n"
 				+ "count(comment_no) as \"댓글수\"\r\n"
 				+ "from tbl_post a \r\n"
-				+"inner join tbl_user b on (a.post_writer = b.user_id)\r\n"
-				+ "full outer join  tbl_like c using(post_no) \r\n"
+				+ "inner join tbl_user b on (a.post_writer = b.user_id)\r\n"
+				+ "left outer join  tbl_like c using(post_no) \r\n"
 				+ "inner join tbl_file d using (post_no) \r\n"
-				+ "full outer join tbl_comment e using(post_no) \r\n"
-				+ "group by profilephoto_path,  \r\n"
-				+ "post_no, post_writer,post_writer_nickname,post_title, post_content, \r\n"
-				+ "post_createdDate, post_view_count,category_no, \r\n"
-				+ " seq_file, origin_name, system_name\r\n"
+				+ "left outer join tbl_comment e using(post_no)\r\n"
+				+ "group by user_type, profilephoto_path,  \r\n"
+				+ "post_no, post_writer,post_writer_nickname,post_title, post_content, post_createdDate, post_view_count,category_no,\r\n"
+				+ "seq_file, origin_name, system_name\r\n"
 				+ "having category_no = ? \r\n"
-			    + "order by post_no desc";
+				+ "order by post_no desc";
+				
 		try(Connection con = this.getConnection();
 				PreparedStatement pstmt = con.prepareStatement(sql);){
 			
@@ -321,6 +322,7 @@ public class BoardDAO {
 				ArrayList<BoardInfoDTO> list = new ArrayList<>();
 				while(rs.next()) {
 					BoardInfoDTO dto = new BoardInfoDTO();
+					dto.setUser_type(rs.getInt("user_type"));
 					dto.setProfilephoto_path(rs.getString("profilephoto_path"));
 					dto.setPost_no(rs.getInt("post_no"));
 					dto.setPost_writer(rs.getString("post_writer"));
@@ -333,8 +335,8 @@ public class BoardDAO {
 					dto.setSeq_file(rs.getInt("seq_file"));
 					dto.setOrigin_name(rs.getString("origin_name"));
 					dto.setSystem_name(rs.getString("system_name"));
-					dto.setLikeCnt(rs.getInt(13));
-					dto.setCommentCnt(rs.getInt(14));
+					dto.setLikeCnt(rs.getInt(14));
+					dto.setCommentCnt(rs.getInt(15));
 					list.add(dto);
 				}
 				if(list!=null) return list;
@@ -343,20 +345,21 @@ public class BoardDAO {
 		         
 	// 게시글 조회
 		public ArrayList<BoardInfoDTO> getAllBoard() throws Exception{
-			String sql = "select profilephoto_path,  \r\n"
-					   + "post_no, post_writer,post_writer_nickname,post_title, post_content, post_createdDate, post_view_count,category_no,\r\n"
-					   + "seq_file, origin_name, system_name,\r\n"
-					   + "count(c.user_id) as \"좋아요수\", \r\n"
-					   + "count(comment_no) as \"댓글수\"\r\n"
-					   + "from tbl_post a \r\n"
-					   + "inner join tbl_user b on (a.post_writer = b.user_id)\r\n"
-					   + "left outer join  tbl_like c using(post_no) \r\n"
-					   + "inner join tbl_file d using (post_no) \r\n"
-					   + "left outer join tbl_comment e using(post_no)\r\n"
-					   + "group by profilephoto_path,  \r\n"
-					   + "post_no, post_writer,post_writer_nickname,post_title, post_content, post_createdDate, post_view_count,category_no,\r\n"
-					   + "seq_file, origin_name, system_name \r\n"
-					   + "order by post_no desc";
+			String sql = "select user_type, profilephoto_path, \r\n"
+					+ " post_no, post_writer,post_writer_nickname,post_title, post_content, post_createdDate, post_view_count,category_no,\r\n"
+					+ "seq_file, origin_name, system_name,\r\n"
+					+ "count(c.user_id) as \"좋아요수\", \r\n"
+					+ "count(comment_no) as \"댓글수\"\r\n"
+					+ "from tbl_post a \r\n"
+					+ "inner join tbl_user b on (a.post_writer = b.user_id)\r\n"
+					+ "left outer join  tbl_like c using(post_no) \r\n"
+					+ "inner join tbl_file d using (post_no) \r\n"
+					+ "left outer join tbl_comment e using(post_no)\r\n"
+					+ "group by user_type, profilephoto_path,  \r\n"
+					+ "post_no, post_writer,post_writer_nickname,post_title, post_content, post_createdDate, post_view_count,category_no,\r\n"
+					+ "seq_file, origin_name, system_name\r\n"
+					+"having user_type!=2"
+					+ "order by post_no desc";
 			try(Connection con = this.getConnection();
 				PreparedStatement pstmt = con.prepareStatement(sql);){
 				ResultSet rs = pstmt.executeQuery();
@@ -375,8 +378,8 @@ public class BoardDAO {
 					dto.setSeq_file(rs.getInt("seq_file"));
 					dto.setOrigin_name(rs.getString("origin_name"));
 					dto.setSystem_name(rs.getString("system_name"));
-					dto.setLikeCnt(rs.getInt(13));
-					dto.setCommentCnt(rs.getInt(14));
+					dto.setLikeCnt(rs.getInt(14));
+					dto.setCommentCnt(rs.getInt(15));
 					list.add(dto);
 				}
 				if(list!=null) return list;
@@ -400,5 +403,18 @@ public class BoardDAO {
 			}
 			return -1;
 		}
-		
+		// post_no로 작성자의 id가져오기
+				public String selectIdByNo(int post_no) throws Exception {
+					String sql = "SELECT post_writer FROM tbl_post WHERE post_no = ?";
+					try(Connection con = this.getConnection();
+						PreparedStatement pstmt= con.prepareStatement(sql);){
+						
+						pstmt.setInt(1, post_no);
+						ResultSet rs = pstmt.executeQuery();
+						if(rs.next()) return rs.getString("post_writer");
+					}catch(Exception e) {
+						e.printStackTrace();
+					}
+					return null;
+				}
 }

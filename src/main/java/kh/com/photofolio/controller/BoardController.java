@@ -22,11 +22,14 @@ import kh.com.photofolio.dao.FileDAO;
 import kh.com.photofolio.dao.FollowDAO;
 import kh.com.photofolio.dao.LikeDAO;
 import kh.com.photofolio.dao.MemberDAO;
+import kh.com.photofolio.dao.NotiDAO;
 import kh.com.photofolio.dto.BoardDTO;
 import kh.com.photofolio.dto.BoardInfoDTO;
 import kh.com.photofolio.dto.FileDTO;
 import kh.com.photofolio.dto.FollowDTO;
 import kh.com.photofolio.dto.MemberDTO;
+import kh.com.photofolio.dto.NotiDTO;
+import kh.com.photofolio.dto.NotiSendDTO;
 import kh.com.photofolio.service.BoardService;
 
 @WebServlet("*.bo")
@@ -47,12 +50,18 @@ public class BoardController extends HttpServlet {
 
 		// 공동 설정
 		request.setCharacterEncoding("utf-8");
+		response.setCharacterEncoding("utf-8");
+		response.setContentType("text/html; charset=UTF-8");
 		HttpSession session = request.getSession(); // 세션 객체
 		BoardDAO dao = new BoardDAO();
+		NotiDAO daoNoti = new NotiDAO(); // 알림DAO
 		String uri = request.getRequestURI();
 		String ctxPath = request.getContextPath();
 		String cmd = uri.substring(ctxPath.length());
-		System.out.println("요청 uri : " + cmd);
+		if(!cmd.equals("/selectNotiProc.bo")) { // 3초마다 호출되어 제외
+			System.out.println("요청 uri : " + cmd);
+		}
+		
 
 		// 게시글 추가 페이지로 이동
 		if (cmd.equals("/toInsertPost.bo")) {
@@ -239,6 +248,7 @@ public class BoardController extends HttpServlet {
 			HashMap<String,String> loginSession = (HashMap)session.getAttribute("loginSession");
 			String post_writer = loginSession.get("user_id");
 			String post_writer_nickname = loginSession.get("user_nickname");
+			String access_token = loginSession.get("access_token");
 			System.out.println(post_writer + " : " + post_writer_nickname);
 
 			// 파일 영역
@@ -280,6 +290,17 @@ public class BoardController extends HttpServlet {
 
 				// 게시글 등록과 파일이 등록 되면 userPage 호출
 				if (rs != -1 && rsFile != -1) {
+					
+					/*** 알림 추가 ***/
+					// 게시글의 경우, 작성자를 팔로우하는 모든 이들에게 알림을 보낼 것
+					FollowDAO daoFollow = new FollowDAO(); // DAO인스턴스 생성도 위에 전역 부분으로 정리 필요
+					ArrayList<FollowDTO>list = daoFollow.getListFollower(post_writer); // 작성자의 팔로워 목록을 불러옴
+					for(FollowDTO dto : list) {
+						String noti_receiver = dto.getUser_id(); // 수신자는 각 팔로워들
+						String noti_msg = post_writer_nickname + "님이 새로운 포스트를 등록했습니다.";
+						daoNoti.insertNoti(new NotiDTO(0, post_writer, noti_receiver, noti_msg, null));
+					}
+					
 					response.sendRedirect("/toUserPage.bo?currentPage=1");
 				}
 
@@ -427,6 +448,8 @@ public class BoardController extends HttpServlet {
 			// 수신 확인
 			HashMap<String, String> map = (HashMap)session.getAttribute("loginSession");
 			String user_id = map.get("user_id");
+			String user_nickname = map.get("user_nickname");
+			String writer = request.getParameter("writer");
 			int goodCount = Integer.parseInt(request.getParameter("goodCount"));
 			int post_no = Integer.parseInt(request.getParameter("postNo"));
 			System.out.println("user_id : " + user_id);
@@ -439,6 +462,12 @@ public class BoardController extends HttpServlet {
 				if(goodCount == 1 && daoLike.addLike(user_id, post_no) > 0) {
 					System.out.println("좋아요 +1 성공");
 					totalCount = daoLike.cntLike(post_no); // 총 좋아요 수 
+					/*** 알림 추가 - 좋아요는 +1일때만 적용 ***/
+					if(!user_id.equals(writer)) { // 본인이 작성한 글에 좋아요 알림 전송 방지
+						String noti_msg = user_nickname + "님이 당신의 글에 좋아요를 눌렀습니다.";
+						daoNoti.insertNoti(new NotiDTO(0, user_id, writer, noti_msg, null));
+					}
+					
 				} else if(goodCount == -1 && daoLike.removeLike(user_id, post_no) > 0) {
 					System.out.println("좋아요 -1 성공");
 					totalCount = daoLike.cntLike(post_no);
@@ -457,6 +486,7 @@ public class BoardController extends HttpServlet {
 			// 수신 확인
 			HashMap<String, String> map = (HashMap)session.getAttribute("loginSession");
 			String follower_id = map.get("user_id");
+			String user_nickname = map.get("user_nickname");
 			String following_id = request.getParameter("writer");
 			int followCount = Integer.parseInt(request.getParameter("followCount"));
 			System.out.println("follower_id : " + follower_id);
@@ -467,6 +497,11 @@ public class BoardController extends HttpServlet {
 			try {
 				if(followCount == 1 && daoFollow.addFollow(following_id, follower_id) > 0) {
 					System.out.println("팔로우 완료");
+					
+					/*** 알림 추가 - 팔로우는 +1일때만 적용 ***/
+					String noti_msg = user_nickname + "님이 당신을 팔로우합니다.";
+					daoNoti.insertNoti(new NotiDTO(0, follower_id, following_id, noti_msg, null));	
+					
 				} else if(followCount == -1 && daoFollow.removeFollow(following_id, follower_id) > 0) {
 					System.out.println("언팔 성공");
 				} else {
@@ -540,7 +575,7 @@ public class BoardController extends HttpServlet {
 			System.out.println("inputVal : " + inputVal);
 			ArrayList<BoardInfoDTO> list = new ArrayList<>();
 			try {
-				list = dao.getBoardByWriter(inputVal);
+				list = dao.getBoardByBoardInfo(inputVal);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -550,7 +585,29 @@ public class BoardController extends HttpServlet {
 			request.setAttribute("list", list);
 			rd.forward(request, response);
 			
-		} else if (cmd.equals("/toSearchByCategory.bo")) {
+		} else if (cmd.equals("/toDetailPostByAdmin.bo")) {
+			// seq 번호 넘겨 받아서, 해당하는 게시글 가져온 후
+			// detailView.jsp 에 뿌려주기
+			int post_no = Integer.parseInt(request.getParameter("post_no"));
+			System.out.println("post_no : " + post_no);
+
+			/*
+			 * // 게시글 조회수 +1 dao.post_viewCount(post_no);
+			 */
+
+			BoardDTO dto = dao.selectBySeq(post_no);
+			FileDAO daoFile = new FileDAO();
+			FileDTO dtoFile = daoFile.getFileNames(post_no); // 파일 가져오는 작업
+			System.out.println(dtoFile);
+
+			if (dto != null) {
+				RequestDispatcher rd = request.getRequestDispatcher("/board/postDetail.jsp");
+				request.setAttribute("dto", dto);
+				request.setAttribute("daoFile", daoFile);
+				request.setAttribute("dtoFile", dtoFile);/* 사진경로 */
+				rd.forward(request, response);
+			}
+		}else if (cmd.equals("/toSearchByCategory.bo")) {
 			System.out.println("/toSearchByCategory.bo진입");
 			int Category_no = (Integer.parseInt(request.getParameter("category_no")));
 			System.out.println("카테고리번호 : " + Category_no);
@@ -565,6 +622,43 @@ public class BoardController extends HttpServlet {
 			RequestDispatcher rd = request.getRequestDispatcher("/main.jsp");
 			request.setAttribute("list", list);
 			rd.forward(request, response);
+			
+		}
+		/*** 알림 관련 ***/
+		// Controller 새로 만들면 좋을거같은데 어디가 좋을까
+		// 개별 알림 삭제
+		else if(cmd.equals("/deleteNotiProc.bo")) {
+			int noti_no = Integer.parseInt(request.getParameter("noti_no"));
+			System.out.println("noti_no : " + noti_no);
+			// 제거 메서드 호출
+			try {
+				if(daoNoti.deleteNoti(noti_no) > 0) {
+					System.out.println("알림 삭제 성공");
+					response.getWriter().write("true"); 
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		// header로 알림 가져오기
+		else if(cmd.equals("/selectNotiProc.bo")) {
+			HashMap<String, String> map = (HashMap)session.getAttribute("loginSession");
+			if(map != null) {
+				String user_id = map.get("user_id");
+				Gson gson = new Gson();
+				try {
+					ArrayList<NotiSendDTO> list = daoNoti.selectNoti(map.get("user_id"));
+
+					if(list != null) {
+						response.getWriter().write(gson.toJson(list));
+					} else {
+						response.getWriter().write("fail");
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
 			
 		}
 	}

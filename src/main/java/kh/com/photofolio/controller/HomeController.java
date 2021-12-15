@@ -51,7 +51,11 @@ public class HomeController extends HttpServlet {
 			}else if(user_type.equals("2")){
 				System.out.println(user_type);
 				RequestDispatcher rd = request.getRequestDispatcher("/toMain.admHome");
-				request.setAttribute("user_type",user_type); rd.forward(request, response);
+				request.setAttribute("user_type",user_type); rd.forward(request, response);	
+			}else if(user_type.equals("3")){
+				RequestDispatcher rd = request.getRequestDispatcher("/toHome.home"); 
+				request.setAttribute("user_type",user_type); 
+				rd.forward(request, response);
 				
 			}
 	     }else {

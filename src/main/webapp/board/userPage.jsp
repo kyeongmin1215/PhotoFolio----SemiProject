@@ -21,274 +21,275 @@
   </script>
 <title>유저 페이지</title>
 <style>
-* {
-	box-sizing: border-box;
-}
+			* {
+				box-sizing: border-box;
+			}
 
 
-/* ========== 유저 페이지 영역 ========== */
-
-/* 유저 컨테이너 */
-.userContainer {
-	width: 1600px;
-	margin: auto;
-	margin-top: 50px;
-}
-/* 프로필, 알림 DIV */
-.profileContainer {
-	height: 869px;
-}
-/* 프로필 박스 */
-.profileBox {
-	border: 1px solid lightgray;
-	padding: 20px;
-	border-radius: 5px;
-	margin-top: 10px;
-	width: 100%;
-}
-/* 프로필 영역 */
-#profileImg {
-	border-radius: 100%;
-	background-color: #9db0e8;
-	width: 100px;
-	height: 100px;
-	overflow:hidden
-}
-/* 프로필 기본이미지 */
-#profileImg>img {
-	width: 100%;
-	height: 100%;
-	object-fit:cover;
-}
-/* 팔로우 버튼 */
-#btnFollow {
-	border: none;
-	background-color: #5656c4;
-	color: white;
-	font-weight: bold;
-	border-radius: 5px;
-}
-/* 팔로잉 버튼 */
-#btnFollowing {
-	border: none;
-	background-color: #5656c4;
-	color: white;
-	font-weight: bold;
-	border-radius: 5px;
-}
-/* 프로필 수정 버튼 */
-#btnEdit {
-	width: 100%;
-	height: 50px;
-	border-radius: 5px;
-	border: none;
-	background-color: #5656c4;
-	color: white;
-	font-weight: bold;
-	font-size: 20px;
-}
-/* 알림창 영역 */
-
-/* 알림 창 박스 */
-.noticeBox {
-	border: 1px solid lightgray;
-	border-radius: 5px;
-	margin: 0%;
-	margin-top: 20px;
-	height: 100%;
-}
-/* 알림 제목 */
-.noticeTitle {
-	border-bottom: 1px solid lightgray;
-	background-color: #5656c4;
-	color: white;
-	font-weight: 900;
-	font-size: 25px;
-	border-radius: 5px;
-	padding: 15px;
-}
-/* 알림 내용 */
-.noticeContent {
-	padding: 20px;
-	overflow: scroll;
-	padding: 20px;
-	height: 91%;
-}
-
-/* 게시글 조회,등록 영역 */
-.boardList {
-	margin-top: 5px;
-	margin-left: 0px;
-	margin-right: 5px;
-	padding: 0%;
-}
-
-.post {
-	width: 390px;
-	height: 390px;
-	padding: 0%;
-}
-/* 게시글 등록 상단 */
-.postDetail {
-	width: 100%;
-	height: 100%;
-	margin-left: 2px;
-	position: relative;
-}
-
-.postDetail>:first-child {
-	height: 100%;
-	width: 100%;
-}
-/* 체크박스 span태그 */
-.checkSeq {
-	float: left;
-	position: absolute;
-	top: 30px;
-	left: 30px;
-}
-/* 인풋 checkbox */
-.checkSeq input {
-	width: 30px;
-	height: 30px;
-}
-/* top삭제버튼 */
-.btnDeleteTop {
-	float: right;
-	position: absolute;
-	left: 320px;
-	top: 30px;
-	width: 100px;
-	height: 100px;
-}
-/* 버튼tag */
-.btnDelete {
-	border: none;
-	background-color: transparent;
-}
-/* top삭제버튼img */
-.btnDeleteTop svg {
-	width: 30px;
-	height: 30px;
-	color: gray;
-	background-color: transparent;
-}
-/* top삭제버튼img 호버*/
-.btnDeleteTop svg:hover {
-	width: 30px;
-	height: 30px;
-	color: black;
-	background-color: transparent;
-}
-/* 게시글 상단  */
-.postDetail {
-	width: 100%;
-	height: 85%;
-}
-/* 게시글추가 버튼 */
-.btnInsert {
-	width: 100%;
-	height: 100%;
-	padding: 0%;
-	margin: 0px;
-	background-color: transparent;
-	border: none;
-	border-radius: 5px;
-}
-/* 게시글 추가 버튼 (+)이미지 */
-.btnInsert>svg {
-	width: 50%;
-	height: 50%;
-	text-align: center;
-	align-items: center;
-	color: gray;
-}
-/* 게시글 추가 버튼 (+)이미지 */
-.btnInsert>svg:hover {
-	width: 50%;
-	height: 50%;
-	text-align: center;
-	align-items: center;
-	color: black;
-}
-/* 사용자 이미지 DIV */
-.thumbnail_img {
-    width: 350px;
-    height: 20rem;
-}
-/* 버튼 파일 사용자 이미지:hover */
-.btnInsert>img:hover {
-	width: 100%;
-	height: 100%;
-	border-radius: 5px;
-	border: 5px solid black;
-	padding: 0%;
-	margin: 0%;
-}
-/* 게시글 등록 디테일 하단 */
-.barDetailBox {
-	height: 12%;
-	width: 93.5%;
-	padding: 0px;
-	margin-left: 15px;
-	margin-top: 5px;
-	border-radius: 5px;
-	border: 1px solid #9db0e8;
-	background-color: #9db0e8;
-}
-/* 게시글 등록 Input 타이틀 */
-.barDetailTitle {
-	border: none;
-	font-size: 17px;
-	font-weight: 900;
-	background-color: #9db0e8;
-	color: white;
-	width:100%;
-	padding-left: 10px;
-	padding-top: 8px;
-}
-.viewBox{
-	margin-top:8px;
-	color:white;
-}
-/* 게시글 등록 Input 타이틀:focus */
-.barDetailTitle:focus {
-	outline: none;
-}
-/* 게시글 수정 버튼 */
-.likeBox {
-	border: none;
-	font-size: 17px;
-	font-weight: bold;
-	background-color: #9db0e8;
-	color: white;
-	padding-top: 5px;
-}
-/* 좋아요 아이콘 */
-.likeBox>svg {
-	width: 45%;
-	height: 45%;
-}
-
-/* 페이징 영역*/
-/* Prev 버튼 */
-#btnPrev {
-	border-radius: 5px;
-	font-size: 20px;
-	font-weight: bold;
-	background-color: #5656c4;
-	color: white;
-	border: none;
-}
-
-#btnNext {
-	border-radius: 5px;
-	font-size: 20px;
-	font-weight: bold;
-	background-color: #5656c4;
-	color: white;
-	border: none;
-}
+		/* ========== 유저 페이지 영역 ========== */
+		
+		/* 유저 컨테이너 */
+		.userContainer {
+			width: 1600px;
+			margin: auto;
+			margin-top: 50px;
+		}
+		/* 프로필, 알림 DIV */
+		.profileContainer {
+			height: 869px;
+		}
+		/* 프로필 박스 */
+		.profileBox {
+			border: 1px solid lightgray;
+			padding: 20px;
+			border-radius: 5px;
+			margin-top: 10px;
+			width: 100%;
+		}
+		/* 프로필 영역 */
+		#profileImg {
+			border-radius: 100%;
+			background-color: #9db0e8;
+			width: 100px;
+			height: 100px;
+			overflow:hidden;
+			padding:0;
+		}
+		/* 프로필 기본이미지 */
+		#profileImg>img {
+			width: 100%;
+			height: 100%;
+			object-fit:cover;
+		}
+		/* 팔로우 버튼 */
+		#btnFollow {
+			border: none;
+			background-color: #5656c4;
+			color: white;
+			font-weight: bold;
+			border-radius: 5px;
+		}
+		/* 팔로잉 버튼 */
+		#btnFollowing {
+			border: none;
+			background-color: #5656c4;
+			color: white;
+			font-weight: bold;
+			border-radius: 5px;
+		}
+		/* 프로필 수정 버튼 */
+		#btnEdit {
+			width: 100%;
+			height: 50px;
+			border-radius: 5px;
+			border: none;
+			background-color: #5656c4;
+			color: white;
+			font-weight: bold;
+			font-size: 20px;
+		}
+		/* 알림창 영역 */
+		
+		/* 알림 창 박스 */
+		.noticeBox {
+			border: 1px solid lightgray;
+			border-radius: 5px;
+			margin: 0%;
+			margin-top: 20px;
+			height: 100%;
+		}
+		/* 알림 제목 */
+		.noticeTitle {
+			border-bottom: 1px solid lightgray;
+			background-color: #5656c4;
+			color: white;
+			font-weight: 900;
+			font-size: 25px;
+			border-radius: 5px;
+			padding: 15px;
+		}
+		/* 알림 내용 */
+		.noticeContent {
+			padding: 20px;
+			overflow: scroll;
+			padding: 20px;
+			height: 91%;
+		}
+		
+		/* 게시글 조회,등록 영역 */
+		.boardList {
+			margin-top: 5px;
+			margin-left: 0px;
+			margin-right: 5px;
+			padding: 0%;
+		}
+		
+		.post {
+			width: 390px;
+			height: 390px;
+			padding: 0%;
+		}
+		/* 게시글 등록 상단 */
+		.postDetail {
+			width: 100%;
+			height: 100%;
+			margin-left: 2px;
+			position: relative;
+		}
+		
+		.postDetail>:first-child {
+			height: 100%;
+			width: 100%;
+		}
+		/* 체크박스 span태그 */
+		.checkSeq {
+			float: left;
+			position: absolute;
+			top: 30px;
+			left: 30px;
+		}
+		/* 인풋 checkbox */
+		.checkSeq input {
+			width: 30px;
+			height: 30px;
+		}
+		/* top삭제버튼 */
+		.btnDeleteTop {
+			float: right;
+			position: absolute;
+			left: 320px;
+			top: 30px;
+			width: 100px;
+			height: 100px;
+		}
+		/* 버튼tag */
+		.btnDelete {
+			border: none;
+			background-color: transparent;
+		}
+		/* top삭제버튼img */
+		.btnDeleteTop svg {
+			width: 30px;
+			height: 30px;
+			color: gray;
+			background-color: transparent;
+		}
+		/* top삭제버튼img 호버*/
+		.btnDeleteTop svg:hover {
+			width: 30px;
+			height: 30px;
+			color: black;
+			background-color: transparent;
+		}
+		/* 게시글 상단  */
+		.postDetail {
+			width: 100%;
+			height: 85%;
+		}
+		/* 게시글추가 버튼 */
+		.btnInsert {
+			width: 100%;
+			height: 100%;
+			padding: 0%;
+			margin: 0px;
+			background-color: transparent;
+			border: none;
+			border-radius: 5px;
+		}
+		/* 게시글 추가 버튼 (+)이미지 */
+		.btnInsert>svg {
+			width: 50%;
+			height: 50%;
+			text-align: center;
+			align-items: center;
+			color: gray;
+		}
+		/* 게시글 추가 버튼 (+)이미지 */
+		.btnInsert>svg:hover {
+			width: 50%;
+			height: 50%;
+			text-align: center;
+			align-items: center;
+			color: black;
+		}
+		/* 사용자 이미지 DIV */
+		.thumbnail_img {
+		    width: 350px;
+		    height: 20rem;
+		}
+		/* 버튼 파일 사용자 이미지:hover */
+		.btnInsert>img:hover {
+			width: 100%;
+			height: 100%;
+			border-radius: 5px;
+			border: 5px solid black;
+			padding: 0%;
+			margin: 0%;
+		}
+		/* 게시글 등록 디테일 하단 */
+		.barDetailBox {
+			height: 12%;
+			width: 93.5%;
+			padding: 0px;
+			margin-left: 15px;
+			margin-top: 5px;
+			border-radius: 5px;
+			border: 1px solid #9db0e8;
+			background-color: #9db0e8;
+		}
+		/* 게시글 등록 Input 타이틀 */
+		.barDetailTitle {
+			border: none;
+			font-size: 17px;
+			font-weight: 900;
+			background-color: #9db0e8;
+			color: white;
+			width:100%;
+			padding-left: 10px;
+			padding-top: 8px;
+		}
+		.viewBox{
+			margin-top:8px;
+			color:white;
+		}
+		/* 게시글 등록 Input 타이틀:focus */
+		.barDetailTitle:focus {
+			outline: none;
+		}
+		/* 게시글 수정 버튼 */
+		.likeBox {
+			border: none;
+			font-size: 17px;
+			font-weight: bold;
+			background-color: #9db0e8;
+			color: white;
+			padding-top: 5px;
+		}
+		/* 좋아요 아이콘 */
+		.likeBox>svg {
+			width: 45%;
+			height: 45%;
+		}
+		
+		/* 페이징 영역*/
+		/* Prev 버튼 */
+		#btnPrev {
+			border-radius: 5px;
+			font-size: 20px;
+			font-weight: bold;
+			background-color: #5656c4;
+			color: white;
+			border: none;
+		}
+		
+		#btnNext {
+			border-radius: 5px;
+			font-size: 20px;
+			font-weight: bold;
+			background-color: #5656c4;
+			color: white;
+			border: none;
+		}
 
 		/**** *modal 기본 디자인 ****/
         .modal-title {
@@ -332,6 +333,41 @@
             height: 50vh;
             overflow-y: auto;
         }
+        
+        /*** notice영역 ***/
+
+		.noti_table {
+		    width: 100%;
+		}
+		.noti_userImg_wrapper {
+		    width: 70px;
+		}
+		#noti_userImg {
+		    width: 50px;
+		    height: 50px;
+		    border-radius: 75%;
+		}
+		.noti_msg {
+		    width: 200px;
+		}
+		.noti_msg > span {
+		    font-size: small;
+		}
+		.noti_delete {
+		    margin: 10px;
+		    text-align: right;
+		}
+		.noti_delete > img {
+		    opacity: 70%;
+		    cursor: pointer;
+		}
+		.noti_date {
+		    width: 200px;
+		    /* height: 25px; */
+		}
+		.noti_date > span {
+		    font-size: small;
+		}
 
 </style>
 </head>
@@ -354,11 +390,11 @@
 					<!-- 프로필 사진 -->
 					<div id="profileImg">
 						<c:choose>
-				            	<c:when test="${!empty loginSession.get('access_token') }">
-				            		<img src="${loginSession.get('profilePhoto_path') }">
+				            	<c:when test="${mdto.getUser_type()==3 }">
+				            		<img src="${mdto.getProfilePhoto_path() }">
 				           		 </c:when>
 				           		 <c:otherwise>
-				            		<img src="/upload/${loginSession.get('profilePhoto_path') }">
+				            		<img src="/upload/${mdto.getProfilePhoto_path() }">
 				            	 </c:otherwise>  
 				            </c:choose>
 					</div>
@@ -396,8 +432,11 @@
 					<div class="col-12 noticeTitle d-flex justify-content-center">
 						Notice</div>
 					<div class="col-12 noticeContent">
-						<p>홍진표 님이 회원님을 팔로우 했습니다.</p>
-						<p>류호진 님이 회원님의 게시물에 좋아요 를 눌렀습니다.</p>
+				    <c:if test="${mdto.getUser_id() eq loginSession.get('user_id')}">
+				        <table class="noti_table">
+				<!-- 알림 내용 추가 됨 -->
+				        </table>
+				    </c:if>
 					</div>
 				</div>
 			</div>
@@ -557,48 +596,51 @@
 		});
 
 		// user가 팔로우하는 유저 목록 가져오기
-		function getListFollow(url) {
-			$(".modal_table").empty(); // modal창 기존 데이터 제거
-			$.ajax({ 
-				type: "get",
-				url: url,
-				dataType: "json"
-			}).done(function(rs) { 
-				let listFollower = ""; // 리스트 담을 공간
-				for(let list of rs) { 
-					if(checkFollow(list.user_id)) { // 팔로우 상태 판별
-						listFollower = '<tr>'
-						+ '<td class="modal_userImg_wrapper">'
-							+ '<img id="modal_userImg" src="' + list.profilePhoto_path + '">'
-						+ '</td>'
-						+ '<td class="modal_userID">' + list.user_nickname + '</td>'
-						+ '<td class="modal_userFollow">'
-							+ '<buttton class="btn btn-primary dynamic_btnFollow_on" id="' + list.user_id + '" value="">팔로잉</button>'
-						+ '</td>'
-						+ '<td class="modal_userFollow" style="display: none;">'
-							+ '<buttton class="btn btn-outline-primary dynamic_btnFollow_off" id="' + list.user_id + '" value="">팔로우</button>'
-						+ '</td>'
-						;
-					} else {
-						listFollower = '<tr>'
-						+ '<td class="modal_userImg_wrapper">'
-							+ '<img id="modal_userImg" src="' + list.profilePhoto_path + '">'
-						+ '</td>'
-						+ '<td class="modal_userID">' + list.user_nickname + '</td>'
-						+ '<td class="modal_userFollow" style="display: none;">'
-						    + '<buttton class="btn btn-primary dynamic_btnFollow_on" id="' + list.user_id + '" value="">팔로잉</button>'
-						+ '</td>'
-						+ '<td class="modal_userFollow">'
-							+ '<buttton class="btn btn-outline-primary dynamic_btnFollow_off" id="' + list.user_id + '" value="">팔로우</button>'
-						+ '</td>'
-					}
-					$(".modal_table").append(listFollower); // 리스트 삽입
-					document.getElementById("btnModalCall").click(); // modal창 열기
-				}
-			}).fail(function(e) {
-				console.log(e);
-			});
-		}
+	      function getListFollow(url) {
+	         $(".modal_table").empty(); // modal창 기존 데이터 제거
+	         $.ajax({ 
+	            type: "get",
+	            url: url,
+	            dataType: "json"
+	         }).done(function(rs) { 
+	            let listFollower = ""; // 리스트 담을 공간
+	            for(let list of rs) { 
+	               if(checkFollow(list.user_id)) { // 팔로우 상태 판별
+	                  listFollower = '<tr>'
+	                            + '<td class="modal_userImg_wrapper">'
+	                                + '<img id="modal_userImg" src="' + list.profilePhoto_path + '">'
+	                            + '</td>'
+	                            + '<td class="modal_userID">' + list.user_nickname + '</td>';
+	                        if("${loginSession.get("user_id")}" !== list.user_id) { // 팔로워 목록에 로그인 유저 본인이 있으면 버튼 제외
+	                            listFollower += '<td class="modal_userFollow">'
+	                     + '<buttton class="btn btn-primary dynamic_btnFollow_on" id="' + list.user_id + '" value="">팔로잉</button>'
+	                            + '</td>'
+	                            + '<td class="modal_userFollow" style="display: none;">'
+	                                + '<buttton class="btn btn-outline-primary dynamic_btnFollow_off" id="' + list.user_id + '" value="">팔로우</button>'
+	                            + '</td>';
+	                        }
+	               } else {
+	                  listFollower = '<tr>'
+	                  + '<td class="modal_userImg_wrapper">'
+	                     + '<img id="modal_userImg" src="' + list.profilePhoto_path + '">'
+	                  + '</td>'
+	                  + '<td class="modal_userID">' + list.user_nickname + '</td>';
+	                        if("${loginSession.get("user_id")}" !== list.user_id) { // 팔로워 목록에 로그인 유저 본인이 있으면 버튼 제외
+	                            listFollower += '<td class="modal_userFollow" style="display: none;">'
+	                      + '<buttton class="btn btn-primary dynamic_btnFollow_on" id="' + list.user_id + '" value="">팔로잉</button>'
+	                            + '</td>'
+	                            + '<td class="modal_userFollow">'
+	                                + '<buttton class="btn btn-outline-primary dynamic_btnFollow_off" id="' + list.user_id + '" value="">팔로우</button>'
+	                            + '</td>';
+	                        }
+	               }
+	               $(".modal_table").append(listFollower); // 리스트 삽입
+	               document.getElementById("btnModalCall").click(); // modal창 열기
+	            }
+	         }).fail(function(e) {
+	            console.log(e);
+	         });
+	      }
 
 		// 팔로우 여부 확인
 		function checkFollow(id) {
@@ -665,7 +707,73 @@
 			});
 		}
 		
+		$(document).ready(function () {
+			getNoti(); // 로드되면 1회 우선 실행
+			setInterval(getNoti, 3000); // 그리고 3초마다 재실행
+		});
+
+		function getNoti() {
+			$.ajax({
+				type: "get",
+				url: "${pageContext.request.contextPath}/selectNotiProc.bo",
+				dataType: "json"
+			}).done(function (rs) {
+				if (!(rs == "fail")) {
+					$(".noti_table").empty(); // 기존 리스트 제거
+					for (let noti of rs) {
+						let notiList = '<tr>'
+											+ '<td class="noti_userImg_wrapper">'
+												
+											+ '</td>'
+											+ '<td class="noti_msg">'
+												+ '<span>' + noti.notiDto.noti_msg + '</span><br>'
+												+ '<span>' + noti.notiDto.noti_date + '</span>'
+											+ '</td>'
+											+ '<td class="noti_delete">'
+												+ '<img src="${pageContext.request.contextPath}/resources/imgTmp/trash.svg" id="' + noti.notiDto.noti_no + '">'
+											+ '</td>'
+										+ '</tr>';
+			
+						$(".noti_table").append(notiList); // 추가
+						
+						if(noti.user_type == 3){ //카카오회원
+		                	let image = '<img id="noti_userImg" src="' + noti.profilephoto_path + '">'
+		                	$(".noti_userImg_wrapper:last").append(image);
+		                }else{//일반회원
+		                	let image = '<img id="noti_userImg" src="/upload/' + noti.profilephoto_path + '">'
+		                	$(".noti_userImg_wrapper:last").append(image);
+		                }
+						
+					}
+				} else {
+					console.log("수신 실패");
+				}
+			}).fail(function (e) {
+				console.log(e);
+			});
+		}
+
+		// 알림 삭제
+		$(document).on("click", ".noti_delete > img", function (e) { // 바인딩 처리
+			$.ajax({
+				type: "post",
+				url: "${pageContext.request.contextPath}/deleteNotiProc.bo",
+				data: {
+					noti_no: e.target.id
+				}
+			}).done(function (rs) {
+				console.log(rs);
+				if (rs == "true") {
+					$(e.target).parents("tr").remove();
+				}
+			}).fail(function (e) {
+				console.log(e);
+			});
+		});
 		
+		$(document).ready(function () {
+			$(".noti_table").append(notiShare); // header에서 noti받아옴
+		});
 
     </script>
 

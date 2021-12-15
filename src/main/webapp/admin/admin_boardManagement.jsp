@@ -23,7 +23,7 @@
     <!-- header import 링크 -->    
     <script type="text/javascript">
         $(document).ready(function () {
-            $("#header").load("/resources/header/header.jsp")
+        	$("#header").load("/resources/header/header_admin.jsp");
         });
     </script>
     <style>
@@ -289,7 +289,7 @@
                                                 <c:if test="${naviMap.get('needPrev') eq true}">
                                                     <li class="page-item">
                                                         <a class="page-link"
-                                                            href="/toPostManagement.admBo?currentPage=${naviMap.get('startNavi')-1}"
+                                                            href="/toBoardManagement.admBo?currentPage=${naviMap.get('startNavi')-1}"
                                                             aria-label="Previous">
                                                             <span aria-hidden="true">&laquo;</span>
                                                         </a>
@@ -298,13 +298,13 @@
                                                 <c:forEach var="i" begin="${naviMap.get('startNavi')}"
                                                     end="${naviMap.get('endNavi')}">
                                                     <li class="page-item"><a class="page-link"
-                                                            href="/toPostManagement.admBo?currentPage=${i}">${i}</a>
+                                                            href="/toBoardManagement.admBo?currentPage=${i}">${i}</a>
                                                     </li>
                                                 </c:forEach>
                                                 <c:if test="${naviMap.get('needNext') eq true}">
                                                     <li class="page-item">
                                                         <a class="page-link"
-                                                            href="/toPostManagement.admBo?currentPage=${naviMap.get('endNavi')+1}"
+                                                            href="/toBoardManagement.admBo?currentPage=${naviMap.get('endNavi')+1}"
                                                             aria-label="Next">
                                                             <span aria-hidden="true">&raquo;</span>
                                                         </a>

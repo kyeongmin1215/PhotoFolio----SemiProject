@@ -271,6 +271,7 @@ div{
 
      // 게시글 등록 버튼
      $("#btnConfirm").on("click", function(){
+    	
          let post_writer = document.getElementById("post_writer");
          let post_writer_nickname = document.getElementById("post_writer_nickname");
          let category_no = document.getElementById("category_no");
@@ -287,6 +288,9 @@ div{
          } else if (post_content.value == "") {
              alert("내용을 입력 해주세요.");
              return;
+         }else if(category_no.value == ""){
+        	 alert("카테고리를 선택해주세요.")
+        	 return;
          }
          $("#insertForm").submit();
     });

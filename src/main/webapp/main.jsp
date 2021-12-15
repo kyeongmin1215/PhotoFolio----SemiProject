@@ -201,7 +201,6 @@
     text-shadow: 6px 2px 2px gray;
 }
 #footer_Info2{
-	position:absolute;
     font-size: large;
     color: white;
     left:50rem; /*600px*/
@@ -366,11 +365,17 @@
 	                       <div class="infoBox_main">
 	                           <!--유저프로필사진-->
 	                           <div id="infoBox_main_profile">
-	                             	
-		                               	  <a href = "${pageContext.request.contextPath}/indToUser.bo?currentPage=1&user_id=${list.getPost_writer()}">
-		                               	  	<img class="toUserPage" src="${pageContext.request.contextPath}/upload/${list.getProfilephoto_path()}" id="info_profilePhoto">
-		                               	  </a>
-									      	      
+	                           		<a href = "${pageContext.request.contextPath}/indToUser.bo?currentPage=1&user_id=${list.getPost_writer()}">
+
+	                           			<c:choose>
+	                           				<c:when test="${list.getUser_type() == 3}">	                           					
+	                           					<img src="${pageContext.request.contextPath}${list.getProfilephoto_path()}" id="info_profilePhoto">
+	                           				</c:when>
+	                           				<c:otherwise>
+	                           				 <img src="${pageContext.request.contextPath}/upload/${list.getProfilephoto_path()}" id="info_profilePhoto">
+	                           				</c:otherwise>							   
+									   	 </c:choose>
+									</a>         	           
 	                           </div>
 	                           <!--유저아이디-->
 	                           <div id="infoBox_main_nickname">

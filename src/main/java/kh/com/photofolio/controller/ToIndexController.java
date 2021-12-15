@@ -2,7 +2,6 @@ package kh.com.photofolio.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -13,7 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import kh.com.photofolio.dao.BoardDAO;
+import kh.com.photofolio.dao.MemberDAO;
 import kh.com.photofolio.dto.BoardInfoDTO;
+import kh.com.photofolio.dto.MemberDTO;
 
 @WebServlet("*.home")
 public class ToIndexController extends HttpServlet {
@@ -37,7 +38,7 @@ public class ToIndexController extends HttpServlet {
 		HttpSession session = request.getSession(); // 세션 객체
 		BoardDAO dao = new BoardDAO();
 		//FileDAO daoFile = new FileDAO();
-		//MemberDAO daoMem = new MemberDAO();
+		/* MemberDAO daoMem = new MemberDAO(); */
 		String uri = request.getRequestURI();
 		String ctxPath = request.getContextPath();
 		String cmd = uri.substring(ctxPath.length());
@@ -51,14 +52,19 @@ public class ToIndexController extends HttpServlet {
 			e.printStackTrace();
 		} 
 		
-		for(int i=0; i<list.size();i++) {
-			System.out.println(list.get(i).getPost_title());
-		}
-//
+		/*
+		 * ArrayList<MemberDTO> mlist = new ArrayList<>(); try { mlist =
+		 * daoMem.selectAll(); }catch(Exception e) { e.printStackTrace(); }
+		 */
+		
+
+
+		
+//			
 		RequestDispatcher rd = request.getRequestDispatcher("/main.jsp");
 		request.setAttribute("list", list);
 //		request.setAttribute("flist", flist);
-//		request.setAttribute("mlist", mlist);
+		/* request.setAttribute("mlist", mlist); */
 		rd.forward(request, response);
 		
 		

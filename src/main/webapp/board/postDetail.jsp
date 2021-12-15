@@ -493,6 +493,7 @@
 				, url : "${pageContext.request.contextPath}/getCommentProc.co?post_no=${dto.getPost_no()}"
 				, dataType : "json"
 			}).done(function(data){
+				if(!(data=="fail")){
 				console.log(data);
 				$(".cmt-showBox").empty();
 				for(let cmt_dto of data){
@@ -508,17 +509,17 @@
 							+ "</div>"
 							+ "</div>"
 							+"<form method='post' id='modiCmtForm'>"
-							+ "<div class='modiBox'  hidden>"
+							+ "<div class='modiBox' name = 'modiBox' value='" + cmt_dto.comment_no + "' hidden>"
 							+"<div class='row mx-2 mb-2 mt-2'>"
 							+"<div class='col'>"
                 			+"<label>댓글수정</label>"
 	                		+"</div>"
 	                		+"<div class='row mx-2  comment-body'>"
 							+"<div class='col-10 comment-input'>"
-							+"<textarea id='modi_content_cmt' class='modi_content_cmt' name='modi_comment_content' onkeydown='resize(this)' onkeyup='resize(this)'>"+cmt_dto.content +"</textarea>"
+							+"<textarea id='modi_content_cmt' class='modi_content_cmt' name='"+cmt_dto.comment_no+"' onkeydown='resize(this)' onkeyup='resize(this)'>"+cmt_dto.content +"</textarea>"
 							+"</div>"
 							+"<div class='col-2 comment-input'>"
-							+"<button type='button' id='btnReGo'  value='" + cmt_dto.comment_no + "' class='btn btn-dark'>Edit</button>"
+							+"<button type='button' id='btnReGo'  value='" + cmt_dto.comment_no + "' class='btn btn-dark btnReGo'>Edit</button>"
 							+"</div>"
 							+"</div>"
 							+ "</div>"
@@ -527,9 +528,9 @@
 							
 							
 							
-							if(${loginSession.get('user_id')} == cmt_dto.user_id){
+							if("${loginSession.get('user_id')}" == cmt_dto.user_id){
 										let btns="<div class='col-3' class='reBtnBox' id='beforeReBtnBox'>"
-										+" <button type='button' id='btnReModify' value='" +cmt_dto.comment_no + "' class='btn btn-dark btn-sm'>Edit</button>"
+										+" <button type='button' id='btnReModify' value='" +cmt_dto.comment_no + "' class='btn btn-dark btn-sm btnReModify'>Edit</button>"
 										+ "<button type='button' id='btnReDelete' value='" + cmt_dto.comment_no + "' class='btn btn-dark btn-sm'>Delete</button>"
 										+"</div>"
 										+"<div class='col-3' class='reBtnBox' id='afterReBtnBox'>"
@@ -541,10 +542,10 @@
 										    
 									}
 							
-							
-							
 							}
-							
+				}else{
+					console.log("수신실패");
+				}	
 						
 			}).fail(function(e){
 	    		console.log(e);
@@ -653,7 +654,8 @@
 				url: "${pageContext.request.contextPath}/goodCountProc.bo",
 				data: { // 로그인 한 유저 id는 Controller에서 세션으로 가져 올 생각
 					goodCount: goodCount,
-					postNo: "${dto.getPost_no()}"
+					postNo: "${dto.getPost_no()}",
+					writer: "${dto.getPost_writer()}"
 				}
 			}).done(function(rs) {
 	        console.log("좋아요 수 :" + rs);
@@ -666,13 +668,29 @@
 		}
 		
 		 //댓글수정버튼 클릭시 확인,취소버튼 나오면서 인풋창 readonly해제          
-		$(document).on('click', '#btnReModify', function(){
+		$(document).on('click', '.btnReModify', function(e){
+			var index = $(this).val();
+            console.log(index);
+			console.log("------------");
+			console.log($("div[value='"+index+"']"));
 			$(this).parent().css("display", "none");
 			$(this).parent().next().css("display", "block");
-			$(".modiBox").attr("hidden", false);
-			
-			
+			$("div[value='"+index+"']").attr("hidden",false);
 		})
+		
+		
+		
+		
+		
+		
+		 //댓글수정버튼 클릭시 확인,취소버튼 나오면서 인풋창 readonly해제          
+		//$(document).on('click', '#btnReModify', function(){
+		//	$(this).parent().css("display", "none");
+		//	$(this).parent().next().css("display", "block");
+		//	$(".modiBox").attr("hidden", false);
+		//	
+		//	
+		//})
 			
 		//댓글삭제버튼 클릭시 댓글삭제
 		$(document).on('click', '#btnReDelete', function(){
@@ -699,7 +717,9 @@
 		$(document).on('click', '#btnReGo', function(){
 			let data =  $("#modiCmtForm").serialize();
 			let value = $(this).val();
-			let content = $("#modi_content_cmt").val();
+			console.log(value);
+			let content = $("textarea[name='"+value+"']").val();
+			console.log(content);
 			
 			$.ajax({
 				url : "${pageContext.request.contextPath}/modifyProc.co?comment_no="+value+"&comment_content=" + content
@@ -709,7 +729,7 @@
 				getCommentList();
 			}).fail(function(e){
 				console.log(e);
-			});
+			}); 
 			
 		})
 		//뒤로가기버튼 클릭 시 다시 댓글조회해서 초기화시킴
@@ -723,40 +743,41 @@
 				console.log(data);
 				$(".cmt-showBox").empty();
 				for(let cmt_dto of data){
-							let comment = "<div class='row mb-2 mx-1 my-3'>"
-							+ "<div class='col-6'>"
-							+ "<div id='comment_content' name='comment_content'>" + cmt_dto.content + "</div>"
-							+ " <button tpye='button' id = 'cmtReport' value='" + cmt_dto.comment_no + "' class='btn btn-danger btn-sm cmtReport'>신고</button>"
-							+ "</div>"
-							+ "<div class='col-3'>"
-							+ cmt_dto.user_nickname +  "|" +cmt_dto.createdDate
-							+ "</div>"
-							+ "<div class='col-2 btnBox'>"
-							+ "</div>"
-							+ "</div>"
-							+"<form method='post' id='modiCmtForm'>"
-							+ "<div class='modiBox' hidden>"
-							+"<div class='row mx-2 mb-2 mt-2'>"
-							+"<div class='col'>"
-                			+"<label>댓글수정</label>"
-	                		+"</div>"
-	                		+"<div class='row mx-2  comment-body'>"
-							+"<div class='col-10 comment-input'>"
-							+"<textarea id='modi_content_cmt' name='modi_comment_content' onkeydown='resize(this)' onkeyup='resize(this)'>"+cmt_dto.content +"</textarea>"
-							+"</div>"
-							+"<div class='col-2 comment-input'>"
-							+"<button type='button' id='btnReGo'  value='" + cmt_dto.comment_no + "' class='btn btn-dark'>Edit</button>"
-							+"</div>"
-							+"</div>"
-							+ "</div>"
-							+"</form>"
-							$(".cmt-showBox").append(comment);
+					let comment = "<div class='row mb-2 mx-1 my-3'>"
+						+ "<div class='col-6'>"
+						+ "<div id='comment_content' name='comment_content'>" + cmt_dto.content + "</div>"
+						+ "<button tpye='button' id = 'cmtReport' value='" + cmt_dto.comment_no + "' class='btn btn-danger btn-sm cmtReport'>신고</button>"
+						+ "</div>"
+						+ "<div class='col-3'>"
+						+ cmt_dto.user_nickname +  "|" +cmt_dto.createdDate
+						+ "</div>"
+						+ "<div class='col-2 btnBox'>"
+						+ "</div>"
+						+ "</div>"
+						+"<form method='post' id='modiCmtForm'>"
+						+ "<div class='modiBox' name = 'modiBox' value='" + cmt_dto.comment_no + "' hidden>"
+						+"<div class='row mx-2 mb-2 mt-2'>"
+						+"<div class='col'>"
+            			+"<label>댓글수정</label>"
+                		+"</div>"
+                		+"<div class='row mx-2  comment-body'>"
+						+"<div class='col-10 comment-input'>"
+						+"<textarea id='modi_content_cmt' class='modi_content_cmt' name='modi_comment_content' onkeydown='resize(this)' onkeyup='resize(this)'>"+cmt_dto.content +"</textarea>"
+						+"</div>"
+						+"<div class='col-2 comment-input'>"
+						+"<button type='button' id='btnReGo'  value='" + cmt_dto.comment_no + "' class='btn btn-dark btnReGo'>Edit</button>"
+						+"</div>"
+						+"</div>"
+						+ "</div>"
+						+"</form>"
+						$(".cmt-showBox").append(comment);
 						
+						
+							let btns=""
 							
-
-							if(${loginSession.get('user_id')} == cmt_dto.user_id){
+							if("${loginSession.get('user_id')}" ==  cmt_dto.user_id){
 									let btns="<div class='col-3' class='reBtnBox' id='beforeReBtnBox'>"
-									+" <button type='button' id='btnReModify' value='" +cmt_dto.comment_no + "' class='btn btn-dark btn-sm'>Edit</button>"
+									+" <button type='button' id='btnReModify' value='" +cmt_dto.comment_no + "' class='btn btn-dark btn-sm btnReModify'>Edit</button>"
 									+ "<button type='button' id='btnReDelete' value='" + cmt_dto.comment_no + "' class='btn btn-dark btn-sm'>Delete</button>"
 									+"</div>"
 									+"<div class='col-3' class='reBtnBox' id='afterReBtnBox'>"
@@ -764,7 +785,7 @@
 									+"</div>"
 									
 									$(".btnBox:last").append(btns);
-								}
+								}else{ let btns=""}
 							
 							}
 						

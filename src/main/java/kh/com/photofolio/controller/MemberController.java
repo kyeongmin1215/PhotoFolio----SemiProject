@@ -172,12 +172,13 @@ public class MemberController extends HttpServlet {
 				String user_email = multi.getParameter("email");
 				String user_address = multi.getParameter("user_address");
 				String profilePhoto_path = multi.getFilesystemName("file");
-				
+				boolean isNumeric =  user_id.matches("[+-]?\\d*(\\.\\d+)?");
+				System.out.println(isNumeric);
 				// 프로필 이미지 경로 처리
 				if(profilePhoto_path == null) { // 프로필 이미지 업로드를 하지 않은 경우
 					if(multi.getParameter("input_profileImgUrl").equals("")) { // null이 아님을 유의할 것
 						// 카카오 회원이 아니면, 기본 프사 경로를 프로필 이미지 경로에 넣기
-						profilePhoto_path = "/resource/imgTmp/kakao.jpg";
+						profilePhoto_path = "/resource/imgTmp/squid-game-6723533_960_720.webp";
 					} else { 
 						// 카카오 회원이라면, 카카오 프사 경로를 프로필 이미지 경로에 넣기
 						profilePhoto_path = multi.getParameter("input_profileImgUrl");
@@ -193,12 +194,21 @@ public class MemberController extends HttpServlet {
 				System.out.println("user_phone : " + user_phone);
 				System.out.println("user_email : " + user_email);
 				System.out.println("user_address : " + user_address);
-				// DB 저장 & 메인화면 이동(일반 회원 user_type default = 1)
+				// DB 저장 & 메인화면 이동(id가 숫자가 아니면(일반회원)-유저타입=1//id가 숫자면(카카오회원)-유저타입=3)
+				if(isNumeric == false) {//일반회원
 				int rs = dao.insert(new MemberDTO(user_id, 1, user_email, user_password, user_phone, user_nickname, user_address, profilePhoto_path, null));
 				if(rs > 0) {
 					System.out.println("저장 성공");
 				} else {
 					System.out.println("저장 실패");
+				}
+				}else {//카카오회원
+					int rs = dao.insert(new MemberDTO(user_id, 3, user_email, user_password, user_phone, user_nickname, user_address, profilePhoto_path, null));
+					if(rs > 0) {
+						System.out.println("저장 성공");
+					} else {
+						System.out.println("저장 실패");
+					}	
 				}
 				response.sendRedirect("/");
 				
