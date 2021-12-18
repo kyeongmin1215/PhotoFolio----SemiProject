@@ -77,6 +77,7 @@ public class ReportController extends HttpServlet {
 					System.out.println("reported_comment_no : " + reported_comment_no);
 					System.out.println("report_content_no : " + report_content_no);
 
+					try {
 					int rs = dao.insert(new ReportDTO(0, report_type, report_writer, report_content, reported_post_no,
 							reported_comment_no, report_content_no, null));
 					if (rs != -1) {
@@ -84,13 +85,17 @@ public class ReportController extends HttpServlet {
 					} else {
 						response.getWriter().write("fail");
 					}
-
+					}catch(Exception e) {
+						response.sendRedirect("/error.jsp");
+						e.printStackTrace();
+					}
 					// 신고 리스트(report_type으로) 출력(리스트는 관리자 페이지에서 출력)
 				} else if (cmd.equals("/getReportProc.re")) {
 					System.out.println("요청 도착");
 					int report_type = Integer.parseInt(request.getParameter("report_type"));
 					System.out.println("report_type : " + report_type);
 
+					try {
 					ArrayList<ReportDTO> list = dao.selectByType(report_type);
 					Gson gson = new Gson();
 					String rs = gson.toJson(list);
@@ -100,6 +105,10 @@ public class ReportController extends HttpServlet {
 						response.getWriter().write(rs);
 					} else {
 						response.getWriter().write("fail");
+					}
+					}catch(Exception e) {
+						response.sendRedirect("/error.jsp");
+						e.printStackTrace();
 					}
 				}
 		

@@ -35,7 +35,7 @@ public class CommentDAO {
 	
 	
 	// 댓글 등록
-	public int insert(CommentDTO dto) {
+	public int insert(CommentDTO dto) throws Exception{
 		String sql = "insert into tbl_comment values(seq_comment.nextval, ?, ?, ?, sysdate)";
 		try (Connection con = this.getConnection();
 				PreparedStatement pstmt = con.prepareStatement(sql);) {
@@ -47,14 +47,12 @@ public class CommentDAO {
 			int rs = pstmt.executeUpdate();
 			if (rs != -1) return rs;
 			
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
+		} 
 		return -1;
 	}
 	
 	// 댓글 리스트 조회
-	public ArrayList<CommentPlusDTO> getCommentList(int post_no){
+	public ArrayList<CommentPlusDTO> getCommentList(int post_no) throws Exception{
 		String sql = "select * from tbl_comment full outer join tbl_user on(tbl_comment.comment_writer_id= tbl_user.user_id) where post_no = ? order by 1 DESC";
 		
 		try(Connection con = this.getConnection();
@@ -73,13 +71,11 @@ public class CommentDAO {
 				list.add(new CommentPlusDTO(comment_no, post_no, id, nickname, content, comment_createdDate));
 			}	
 			return list;
-		}catch(Exception e) {
-			e.printStackTrace();
 		}
-		return null;
+	
 	}
 	//닉네임 뽑아오기 
-	public String selectNN(String id) {
+	public String selectNN(String id) throws Exception {
 		String sql = "select tbl_user.user_nickname from tbl_user inner join tbl_comment on tbl_user.user_id=tbl_comment.comment_writer_id where tbl_user.user_id=?";
 		
 		try(Connection con = this.getConnection();
@@ -93,13 +89,11 @@ public class CommentDAO {
 				String NN = rs.getString("user_nickname");
 				return NN;
 			}
-		}catch(Exception e) {
-			e.printStackTrace();
-		} return null;
+		}return null;
 		
 	}
 	//댓글 삭제
-	public int deleteBySeq(int seq) {
+	public int deleteBySeq(int seq) throws Exception{
 		String sql = "delete from tbl_comment where comment_no=?";
 		
 		try(Connection con = this.getConnection();
@@ -109,12 +103,10 @@ public class CommentDAO {
 			int rs = pstmt.executeUpdate();
 			
 			if(rs != -1) return rs;
-		}catch(Exception e) {
-			e.printStackTrace();
 		}return -1;
 	}
 	//댓글 수정
-	public int modify(int no, String content) {
+	public int modify(int no, String content) throws Exception{
 		String sql  = "update tbl_comment set comment_content=? where comment_no = ?";
 		
 		try(Connection con = this.getConnection();
@@ -125,8 +117,6 @@ public class CommentDAO {
 			int rs = pstmt.executeUpdate();
 			
 			if(rs != -1) return rs;
-		}catch(Exception e) {
-			e.printStackTrace();
 		}return -1;
 	}
 	//댓글 총 갯수 뽑아내기 

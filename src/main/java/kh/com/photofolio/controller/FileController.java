@@ -64,6 +64,7 @@ public class FileController extends HttpServlet {
 				dos.write(arr);
 
 			} catch (Exception e) {
+				response.sendRedirect("/error.jsp");
 				e.printStackTrace();
 			}
 		}

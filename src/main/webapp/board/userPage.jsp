@@ -11,6 +11,9 @@
 	rel="stylesheet"
 	integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
 	crossorigin="anonymous">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
 <script src="https://code.jquery.com/jquery-3.6.0.js"
 	integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
 	crossorigin="anonymous"></script>
@@ -66,6 +69,7 @@
 			border: none;
 			background-color: #5656c4;
 			color: white;
+			font-family: 'Jua', sans-serif;
 			font-weight: bold;
 			border-radius: 5px;
 		}
@@ -75,7 +79,16 @@
 			background-color: #5656c4;
 			color: white;
 			font-weight: bold;
+			font-family: 'Jua', sans-serif;
 			border-radius: 5px;
+		}
+		.flBtn{
+			position:relative;
+			left:120px;
+			bottom:60px;
+		}
+		#follow{
+			height:10px;
 		}
 		/* 프로필 수정 버튼 */
 		#btnEdit {
@@ -87,6 +100,7 @@
 			color: white;
 			font-weight: bold;
 			font-size: 20px;
+			font-family: 'Jua', sans-serif;
 		}
 		/* 알림창 영역 */
 		
@@ -105,6 +119,7 @@
 			color: white;
 			font-weight: 900;
 			font-size: 25px;
+			font-family: 'Jua', sans-serif;
 			border-radius: 5px;
 			padding: 15px;
 		}
@@ -113,7 +128,8 @@
 			padding: 20px;
 			overflow: scroll;
 			padding: 20px;
-			height: 91%;
+			height: 95%;
+			font-family: 'Jua', sans-serif;
 		}
 		
 		/* 게시글 조회,등록 영역 */
@@ -242,15 +258,20 @@
 			border: none;
 			font-size: 17px;
 			font-weight: 900;
+			font-family: 'Jua', sans-serif;
 			background-color: #9db0e8;
 			color: white;
 			width:100%;
 			padding-left: 10px;
 			padding-top: 8px;
+			overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 		}
 		.viewBox{
 			margin-top:8px;
 			color:white;
+			font-family: 'Jua', sans-serif;
 		}
 		/* 게시글 등록 Input 타이틀:focus */
 		.barDetailTitle:focus {
@@ -261,6 +282,7 @@
 			border: none;
 			font-size: 17px;
 			font-weight: bold;
+			font-family: 'Jua', sans-serif;
 			background-color: #9db0e8;
 			color: white;
 			padding-top: 5px;
@@ -296,6 +318,7 @@
             font-size: 17px;
             text-align: left;
             font-weight: bold;
+            font-family: 'Jua', sans-serif;
         }
 
         .modal_table {
@@ -334,41 +357,13 @@
             overflow-y: auto;
         }
         
-        /*** notice영역 ***/
-
-		.noti_table {
-		    width: 100%;
-		}
-		.noti_userImg_wrapper {
-		    width: 70px;
-		}
-		#noti_userImg {
-		    width: 50px;
-		    height: 50px;
-		    border-radius: 75%;
-		}
-		.noti_msg {
-		    width: 200px;
-		}
-		.noti_msg > span {
-		    font-size: small;
-		}
-		.noti_delete {
-		    margin: 10px;
-		    text-align: right;
-		}
-		.noti_delete > img {
-		    opacity: 70%;
-		    cursor: pointer;
-		}
-		.noti_date {
-		    width: 200px;
-		    /* height: 25px; */
-		}
-		.noti_date > span {
-		    font-size: small;
-		}
-
+        #followBtn, #followingBtn{
+    		height:80px;
+			width:100px;
+			background-color:rgb(86, 86, 196);
+	
+}
+        
 </style>
 </head>
 <body>
@@ -389,14 +384,7 @@
 
 					<!-- 프로필 사진 -->
 					<div id="profileImg">
-						<c:choose>
-				            	<c:when test="${mdto.getUser_type()==3 }">
 				            		<img src="${mdto.getProfilePhoto_path() }">
-				           		 </c:when>
-				           		 <c:otherwise>
-				            		<img src="/upload/${mdto.getProfilePhoto_path() }">
-				            	 </c:otherwise>  
-				            </c:choose>
 					</div>
 					
 				
@@ -405,7 +393,7 @@
 						<div class="mb-1">
 								<h4> ${mdto.getUser_nickname() }</h4>
 						</div>
-						
+						<div>
 							<div>
 								<button type="button" class="mb-1" id="btnFollow">follower
 										${countFollower}</button>
@@ -413,7 +401,16 @@
 							<div>
 								<button type="button" id="btnFollowing">follwing ${countFollowing}</button>
 							</div>
-						
+						</div>
+						<div id="follow">
+							<c:if test="${mdto.getUser_id() ne loginSession.get('user_id') }">
+								<div class="col-1 mb-2 flBtn">
+			            				<button type="button" class="btn btn-dark" id="followingBtn">팔로잉</button>
+			            				<button type="button" class="btn btn-dark" id="followBtn">팔로우+</button>
+		            			</div>
+	            			 </c:if>
+						</div>
+							
 					</div>
 
 					<!-- 프로필 수정 버튼 -->
@@ -445,7 +442,7 @@
 			<div class="col-9">
 				<!-- 게시글 조회,등록  -->
 				<div class="row boardList m-0">
-					<c:forEach items="${board_list}" var="dto">
+					<c:forEach items="${list}" var="dto">
 
 						<!-- 1번 게시글 등록 -->
 					
@@ -455,11 +452,12 @@
 							<div class="row postDetail">
 								<div class="col-12">
 									<span class="checkSeq"> <input type="checkbox"
-										class="checkbox">
+										class="checkbox" style="visibility: hidden;">
 									</span>
 
 									<!-- 상단 제거버튼 -->
 									<span class="btnDeleteTop">
+										<c:if test="${loginSession.get('user_id') == dto.getPost_writer() }">
 										<button type="button" class="btnDelete"value="${dto.getPost_no() }">
 											<svg xmlns="http://www.w3.org/2000/svg" width="16"
 												height="16" fill="currentColor" class="bi bi-x-circle"
@@ -470,6 +468,7 @@
 													d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
                                             </svg>
 										</button>
+										</c:if>
 									</span>
 
 
@@ -577,7 +576,6 @@
     </button>>
 
 	 <script>
-        // modal 호출 버튼 대체
 		document.addEventListener("click", function(e) {
 			let id = "${mdto.getUser_id()}";
 			if(e.target.id == "btnFollowing") {
@@ -660,7 +658,7 @@
 			return tmp;
 		}
 
-		// 팔로우 버튼 클릭
+		// 팔로우 +1
 		$(document).on("click", ".dynamic_btnFollow_off", function(e) { // 바인딩 처리
 			let id = e.target.getAttribute("id");
 			$(e.target).parent().prev().show();
@@ -676,14 +674,27 @@
 			follow("remove", id); // 팔로우 +1
 		});
 
-		
-		
+        // 팔로우 버튼 노출(modal아님)
+        if(checkFollow("${mdto.getUser_id()}")) {
+            $("#followBtn").hide();
+            $("#followingBtn").show();
+        } else {
+            $("#followBtn").show();
+            $("#followingBtn").hide();
+        }
 
-		// 팔로우 버튼 전환 function
-		// function changeDisplay_follow(firstVal, lastVal) {
-		// 	document.getElementById("followBtn").style.display = firstVal; // 팔로우 하기 전
-		// 	document.getElementById("followingBtn").style.display = lastVal; // 팔로우 누른 뒤
-		// }
+        // 팔로우 버튼(modal아님)
+		document.addEventListener("click", function(e) {
+            if(e.target.id == "followBtn") {
+                follow("add", "${mdto.getUser_id()}");
+                $("#followBtn").hide();
+                $("#followingBtn").show();
+            } else if(e.target.id == "followingBtn" && confirm("팔로우를 취소하시겠습니까?")) {
+                follow("remove", "${mdto.getUser_id()}");
+                $("#followBtn").show();
+                $("#followingBtn").hide();
+            }
+        });
 
 		// 팔로우 처리
 		function follow(count, id) {
@@ -708,72 +719,10 @@
 		}
 		
 		$(document).ready(function () {
-			getNoti(); // 로드되면 1회 우선 실행
-			setInterval(getNoti, 3000); // 그리고 3초마다 재실행
+			 $(".noti_table").append(notiShare); // header에서 noti받아옴
 		});
 
-		function getNoti() {
-			$.ajax({
-				type: "get",
-				url: "${pageContext.request.contextPath}/selectNotiProc.bo",
-				dataType: "json"
-			}).done(function (rs) {
-				if (!(rs == "fail")) {
-					$(".noti_table").empty(); // 기존 리스트 제거
-					for (let noti of rs) {
-						let notiList = '<tr>'
-											+ '<td class="noti_userImg_wrapper">'
-												
-											+ '</td>'
-											+ '<td class="noti_msg">'
-												+ '<span>' + noti.notiDto.noti_msg + '</span><br>'
-												+ '<span>' + noti.notiDto.noti_date + '</span>'
-											+ '</td>'
-											+ '<td class="noti_delete">'
-												+ '<img src="${pageContext.request.contextPath}/resources/imgTmp/trash.svg" id="' + noti.notiDto.noti_no + '">'
-											+ '</td>'
-										+ '</tr>';
-			
-						$(".noti_table").append(notiList); // 추가
-						
-						if(noti.user_type == 3){ //카카오회원
-		                	let image = '<img id="noti_userImg" src="' + noti.profilephoto_path + '">'
-		                	$(".noti_userImg_wrapper:last").append(image);
-		                }else{//일반회원
-		                	let image = '<img id="noti_userImg" src="/upload/' + noti.profilephoto_path + '">'
-		                	$(".noti_userImg_wrapper:last").append(image);
-		                }
-						
-					}
-				} else {
-					console.log("수신 실패");
-				}
-			}).fail(function (e) {
-				console.log(e);
-			});
-		}
-
-		// 알림 삭제
-		$(document).on("click", ".noti_delete > img", function (e) { // 바인딩 처리
-			$.ajax({
-				type: "post",
-				url: "${pageContext.request.contextPath}/deleteNotiProc.bo",
-				data: {
-					noti_no: e.target.id
-				}
-			}).done(function (rs) {
-				console.log(rs);
-				if (rs == "true") {
-					$(e.target).parents("tr").remove();
-				}
-			}).fail(function (e) {
-				console.log(e);
-			});
-		});
 		
-		$(document).ready(function () {
-			$(".noti_table").append(notiShare); // header에서 noti받아옴
-		});
 
     </script>
 
@@ -788,14 +737,12 @@
 
 
 	<script>
-		$(".btnDelete").click(function(){
-			if ($(".checkbox").is(":checked") == false) {
-				return;
-			} else {
-				let val = this.value;
-				location.href = "${pageContext.request.contextPath}/deleteProc.bo?post_no=" +val;
-			}
-		});
+//	단일 삭제
+	$(".btnDelete").click(function(){
+		let val = this.value;
+		location.href = "${pageContext.request.contextPath}/deleteProc.bo?post_no=" +val;
+		console.log(val);
+	});
 
 		//Edit profile 버튼 처리 ->마이페이지로 
 		$("#btnEdit").click(function(){
@@ -807,6 +754,8 @@
 		     location.href = "${pageContext.request.contextPath}/toDetailPost.bo";
 		});
 	
+		
+		
 	</script>
 
 

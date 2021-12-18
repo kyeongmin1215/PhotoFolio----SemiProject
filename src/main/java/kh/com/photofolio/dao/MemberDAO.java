@@ -180,7 +180,7 @@ public class MemberDAO {
 		}
 	
 		// 회원탈퇴기능
-	public int deleteId(String id) {
+	public int deleteId(String id) throws Exception {
 		String sql = "delete from tbl_user where user_id = ?";
 		
 		try(Connection con = this.getConnection();
@@ -190,15 +190,10 @@ public class MemberDAO {
 			
 			int rs = pstmt.executeUpdate();
 			
-			if(rs != -1) {
-				return rs;
-			}
+			if(rs != -1) return rs;
 			
-		}catch(Exception e) {
-			e.printStackTrace();
-		}return -1;
+	}return -1;
 	}
-	
 	public int modifyInfo(String id, String email, String phone, String nickname, String address, String profilePhoto_path) throws Exception{
 		
 		String sql = "update tbl_user set user_email=?, user_phone=?, user_nickname=?, user_address=?, profilePhoto_path=? where user_id=?";
@@ -219,8 +214,6 @@ public class MemberDAO {
 					return rs;
 				}
 				
-			}catch(Exception e) {
-				e.printStackTrace();
 			}return -1;
 	}
 	public boolean pwCheckRequest(String user_password) throws Exception {
@@ -249,8 +242,6 @@ public class MemberDAO {
 			if(rs != -1) {
 				return rs;
 			}
-		}catch(Exception e) {
-			e.printStackTrace();
 		}	return -1;
 	}
 				
@@ -275,8 +266,37 @@ public class MemberDAO {
 				
 				list.add(new MemberDTO(user_id, user_type, user_email, user_password, user_phone, user_nickname, user_address, profilePhoto_path, user_signup_date));
 			}return list;
-		}catch(Exception e) {
-			e.printStackTrace();
-		}return null;
+		}
+	
+	}
+	//아이디 기준으로 프로필뽑아오기 
+	public String selectPhoto(String id) throws Exception{
+		String sql = "select profilePhoto_path from tbl_user where user_id=?";
+		
+		try(Connection con = this.getConnection();
+			PreparedStatement pstmt = con.prepareStatement(sql);){
+			
+			pstmt.setString(1, id);
+			ResultSet rs = pstmt.executeQuery();
+			
+			if(rs.next()) return rs.getString("profilePhoto_path");
+			
+		}
+		return null;
+	}
+	//아이디 기준으로 프로필뽑아오기 
+	public String selectNN(String id) throws Exception{
+		String sql = "select user_nickname from tbl_user where user_id=?";
+		
+		try(Connection con = this.getConnection();
+			PreparedStatement pstmt = con.prepareStatement(sql);){
+			
+			pstmt.setString(1, id);
+			ResultSet rs = pstmt.executeQuery();
+			
+			if(rs.next()) return rs.getString("user_nickname");
+			
+		}
+		return null;
 	}
 }

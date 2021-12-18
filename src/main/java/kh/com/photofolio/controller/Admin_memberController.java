@@ -58,6 +58,7 @@ public class Admin_memberController extends HttpServlet {
 			try {
 				recordTotalCnt = dao.countAll(); //countAll : 전체 회원 수를 얻어오는 메서드
 			}catch(Exception e) {
+				response.sendRedirect("/error.jsp");
 				e.printStackTrace();
 			}
 			// 전체 데이터 총 갯수
@@ -94,6 +95,7 @@ public class Admin_memberController extends HttpServlet {
 					recordTotalCnt = dao.getUserByPhoneCnt(value);
 				}
 			}catch(Exception e) {
+				response.sendRedirect("/error.jsp");
 				e.printStackTrace();
 			}		
 			HashMap<String, Object> naviMap = service.getPageNavi(currentPage, recordTotalCnt); // 네비바 시작/끝 숫자, 앞뒤 버튼 여부
@@ -112,6 +114,7 @@ public class Admin_memberController extends HttpServlet {
 			try {
 				rs = dao.deleteUser(users); // 삭제 성공 여부
 			}catch(Exception e) {
+				response.sendRedirect("/error.jsp");
 				e.printStackTrace();
 			}
 			if (rs != -1) { //성공한 경우 회원 정보 첫 페이지로 이동
@@ -122,6 +125,7 @@ public class Admin_memberController extends HttpServlet {
 				try {
 					recordTotalCnt = dao.countAll(); //countAll : 전체 회원 수를 얻어오는 메서드
 				}catch(Exception e) {
+					response.sendRedirect("/error.jsp");
 					e.printStackTrace();
 				}
 				// 전체 데이터 총 갯수

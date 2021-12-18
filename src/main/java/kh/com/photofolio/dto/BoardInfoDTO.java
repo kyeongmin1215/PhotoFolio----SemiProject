@@ -5,21 +5,21 @@ import java.sql.Date;
 import oracle.net.aso.c;
 
 public class BoardInfoDTO {
-	int user_type;
-	String profilephoto_path;
-	int post_no;
-	String post_writer;
-	String post_writer_nickname;
-	String post_title;
-	String post_content;
-	Date post_createdDate;
-	int post_view_count;
-	int category_no;
-	int seq_file;
-	String origin_name;
-	String system_name;
-	int likeCnt;
-	int commentCnt;
+	private int user_type;
+	private String profilephoto_path;
+	private int post_no;
+	private String post_writer;
+	private String post_writer_nickname;
+	private String post_title;
+	private String post_content;
+	private Date post_createdDate;
+	private int post_view_count;
+	private int category_no;
+	private int seq_file;
+	private String origin_name;
+	private String system_name;
+	private int likeCnt;
+	private int commentCnt;
 	
 	public BoardInfoDTO() {}
 	public BoardInfoDTO(int user_type, String profilephoto_path, int post_no, String post_writer, String post_writer_nickname,
@@ -160,4 +160,3 @@ public class BoardInfoDTO {
 	}
 	
 }
-

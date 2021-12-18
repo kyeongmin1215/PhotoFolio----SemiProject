@@ -13,8 +13,11 @@
 		integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
 		crossorigin="anonymous"></script>
 	<script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
-	    <title>signUp</title>
+	    <title>회원가입</title>
     <style>
+     body{
+  background-color:rgb(86, 86, 196);
+  }
         h1 {
             font-weight: bold;
             margin: 0;
@@ -89,8 +92,20 @@
 
         .clsBtn {
             width: 100%;
+            background-color:rgb(86, 86, 196);
+            border:1px solid rgb(86, 86, 196);
+        }
+        .clsBtn:hover{
+        	background-color:#b4b4e4;
         }
 
+		.btnPost{
+			background-color:rgb(86, 86, 196);
+			border:1px solid rgb(86, 86, 196);
+		}
+		.btnPost:hover{
+			background-color:#b4b4e4;
+		}
         .txtRegex {
             font-size: smaller;
         }
@@ -118,8 +133,7 @@
             <div class="row my-4">
                 <div class="col-md-9 mb-3">
                     <label for="id">아이디</label>
-                    <input type="text" class="form-control" id="id" name="id" placeholder="6~10자 이내의 영문자, 숫자"
-                        maxlength="10" required>
+                    <input type="text" class="form-control" id="id" name="id" placeholder="6~9자 이내의 영문자, 숫자" maxlength="9" required>
                     <span class="txtRegex" id="txtRegex_id"></span>
                 </div>
                 <div class="col-md-3 mb-3">
@@ -131,9 +145,9 @@
             <!--패스워드 영역-->
             <div class="row my-4">
                 <div class="col-md-6 mb-3">
-                    <label for="password1">비밀번호</label>
+                    <label for="password1">비밀번호 (8~16자 이내)</label>
                     <input type="password" class="form-control" id="password1" name="password1" maxlength="16"
-                        placeholder="8~16자, 대소수특 각 1개 이상" required>
+                        placeholder="대소문자, 숫자, 특수문자 각 1개 이상" required>
                     <div class="invalid-feedback">
                         패스워드를 입력해주세요.
                     </div>
@@ -142,7 +156,7 @@
                 <div class="col-md-6 mb-3">
                     <label for="password2">비밀번호 확인</label>
                     <input type="password" class="form-control" id="password2" name="password2" maxlength="16"
-                        placeholder="PW확인" required>
+                        placeholder="대소문자, 숫자, 특수문자 각 1개 이상" required>
                     <div class="invalid-feedback">
                         패스워드를 입력해주세요.
                     </div>
@@ -154,10 +168,7 @@
                 <div class="col-md-9 mb-3">
                     <label for="nickname">닉네임</label>
                     <input type="text" class="form-control" id="nickname" name="nickname" maxlength="10"
-                        placeholder="정규식 미확정" required>
-                    <div class="invalid-feedback">
-                        닉네임을 입력해주세요.
-                    </div>
+                        placeholder="한글, 영문자 2~10자 이내" required>
                     <span class="txtRegex" id="txtRegex_nickname"></span>
                 </div>
                 <div class="col-md-3 mb-3">
@@ -244,7 +255,7 @@
                 </div>
                 <div class="col-12 col-md-6 my-2">
                     <div id="wrap-findPostcode"><input type="button" onclick="sample4_execDaumPostcode()"
-                            value="우편번호 찾기" class="btn btn-primary"></div>
+                            value="우편번호 찾기" class="btn btn-primary btnPost"></div>
                 </div>
                 <div class="col-12 col-md-6 my-2"><input type="text" class="form-control" id="sample4_roadAddress"
                         name="roadAddress" placeholder="도로명주소" readonly></div>
@@ -295,7 +306,7 @@
 
         // 아이디 정규식(통과하면 true, 아니면 false 반환)
         function regexId() {
-            const regexId = /^[a-zA-Z0-9_]{6,10}$/;
+            const regexId = /^[a-zA-Z0-9_]{6,9}$/;
             return regexId.test(id.value);
         }
 
@@ -341,14 +352,13 @@
         let password1 = document.getElementById("password1"); // pw1 입력창
         let password2 = document.getElementById("password2"); // pw2 입력창
 
-        // 패스워드 정규식 - 일치하면 true, 아니면 false반환 (정규식 먹히는게 없어서 메서드 처리)
         // 대소수특 각1개 이상 존재 & 8~16자리의 글자
         function regexPw() {
             const regexPw1 = /[a-z]/;
             const regexPw2 = /[A-Z]/;
             const regexPw3 = /[0-9]/;
             const regexPw4 = /[~!@#$%^&*+._]/;
-            const regexPw5 = /[\S]{8,16}/; // 공백제외, 8~16자리인지 검사(제대로 안먹힘ㅅㅂ)
+            const regexPw5 = /[\S]{8,16}/; 
             const regexPw = [regexPw1, regexPw2, regexPw3, regexPw4];
             let checkRegex = [false, false, false, false];
             // 패스워드 글자 하나씩 분리하여 대소수특 존재하는지 검사
@@ -391,24 +401,34 @@
         // 변수 - 닉네임 관련
         let nickname = document.getElementById("nickname"); // nickname 입력창
         let nicknameCheck = document.getElementById("nicknameCheck"); // nickname 중복검사 버튼
-
-        // 닉네임 정규식(통과하면 true, 아니면 false반환)
+        let txtRegex_nickname = document.getElementById("txtRegex_nickname");
+        
+        // 닉네임 정규식
         function regexNickname() {
-            const regexNickname = /[a-zA-Z0-9ㄱ-힣]{2,16}/; // 2~16자리 대소수한
+            const regexNickname = /^[a-zA-Zㄱ-힣]{2,10}$/; // 2~10자리 대소수한
             return regexNickname.test(nickname.value);
         }
 
-        // 닉네임 중복검사(정규식 통과해야 검사하기)
+     // 닉네임 입력창 검사
+        nickname.addEventListener("change", function () {
+            if (!regexNickname()) {
+                txtRegex_nickname.innerText = "올바른 닉네임을 입력하세요.";
+                txtRegex_nickname.style.color = "red";
+            } else {
+                txtRegex_nickname.innerText = "";
+            }
+        });
+     
+        // 닉네임 중복검사
         nicknameCheck.addEventListener("click", function () {
-            if (regexNickname()) { // 정규식 통과할경우 중복검사 진행
+            if (regexNickname()) {
                 $.ajax({
                     type: "post",
                     url: "${pageContext.request.contextPath}/nicknameCheckProc.mem",
                     data: {
                         "nickname": nickname.value
                     }
-                }).done(function (data) { // 중복이 아니면 String형 false반환
-                    // 안내문구 출력 & 중복이 아니면 readOnly활성화 & 중복 검사 버튼 비활성화
+                }).done(function (data) {
                     if (data == "false") {
                         alert("사용 가능한 닉네임입니다.");
                         nickname.readOnly = "true";
@@ -425,15 +445,6 @@
             }
         });
 
-        // 닉네임 입력창 벗어날 때 정규식 검사(중복검사 버튼과 겹침)
-        nickname.addEventListener("change", function () {
-            if (!regexNickname()) {
-                txtRegex_nickname.innerText = "올바른 닉네임을 입력하세요.";
-                txtRegex_nickname.style.color = "red";
-            } else {
-                txtRegex_pw.innerText = "";
-            }
-        });
 
         /***** 이메일 영역 *****/
 
@@ -588,17 +599,15 @@
         /***** 그 외 *****/
 
         // 카카오 유저 회원가입
-        let kakaoLogin = false; // 카카오 로그인 여부(default false)
-        let kakao_id = ""; // 고유id담을공간
+        let kakaoLogin = false;
+        let kakao_id = "";
         if ("${userInfo.get('nickname')}" !== "") {
-            // 카카오 계정 정보 가져오기
             kakaoLogin = true;
             const kakao_nickname = "${userInfo.get('nickname')}";
             const kakao_profileImgUrl = "${userInfo.get('profile_image_url')}";
-            const kakao_email = "${userInfo.get('email')}"; // 값이 없을 수도 있음
+            const kakao_email = "${userInfo.get('email')}";
             kakao_id = "${userInfo.get('id')}";
 
-            // 가져온 정보를 입력창 & 프로필 이미지에 넣기
             nickname.value = kakao_nickname;
             email.value = kakao_email;
             input_profileImgUrl.value = kakao_profileImgUrl;
@@ -606,7 +615,6 @@
                 "background-image": "url('" + kakao_profileImgUrl + "')"
             });
 
-            // 아이디, 패스워드, 닉네임 영역 비활성화
             id.readOnly = "true";
             password1.readOnly = "true";
             password2.readOnly = "true";
@@ -623,7 +631,6 @@
             readImage(e.target);
         });
         function readImage(input) {
-            // 사진 있는지 판별 & 로드 후 css에 미리보기 이미지 넣기
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
                 reader.addEventListener("load", function (e) {
@@ -635,7 +642,7 @@
             }
         }
 
-        // 완료 버튼 - 공백없고, 정규식 검사 모두 다시 돌려서 통과하면 submit처리(프로필 사진, 상세주소는 필수 아님)
+        // 완료 버튼 
         document.getElementById("btnSubmit").addEventListener("click", function () {
             // 변수 - 주소 관련
             let postcode = document.getElementById("sample4_postcode"); // 우편번호
@@ -643,26 +650,26 @@
             let detailAddr = document.getElementById("sample4_detailAddress"); // 상세주소
             let extraAddr = document.getElementById("sample4_extraAddress"); // 참고항목
 
-            if (kakaoLogin) { // 카카오 계정으로 로그인하는 경우
+            if (kakaoLogin) {
                 if (email.value == "" || !regexEmail()) {
                     alert("이메일을 제대로 입력해주세요.");
                     return;
                 } else if (!regexPhone()) {
                     alert("휴대전화를 제대로 입력해주세요.");
                     return;
-                } else if (!verification_input.readOnly) { 
+                } else if (!verification_input.readOnly) {
                     alert("휴대전화 인증을 해주세요.");
                     return;
                 } else if (postcode.value == "" || roadAddr == "") {
                     alert("우편번호 찾기를 진행해주세요.");
                     return;
                 } else {
-                    id.value = kakao_id; // 카카오 회원번호(ID) id입력창에 넣기(고유키로 활용)
+                    id.value = kakao_id;
                     document.getElementById("user_phone").value = phone1.value + phone2.value + phone3.value;
                     document.getElementById("user_address").value = postcode.value + " " + roadAddr.value + " " + detailAddr.value + extraAddr.value;
                     document.getElementById("signupForm").submit();
                 }
-            } else { // 카카오 계정으로 로그인이 아닐 경우
+            } else {
                 if (id.value == "" || !regexId()) {
                     alert("아이디를 제대로 입력해주세요.");
                     return;
@@ -670,9 +677,6 @@
                     alert("패스워드를 제대로 입력해주세요.");
                     return;
                 } else if (!regexPhone()) {
-                    // phoneNumber는 number타입이라, phoneNumber == 0 조건을 걸어야 함
-                    // -> 0이 아니라면, 정규식 검사를 통과한 것(인증번호 통과 여부는 알 수 없음)
-                    // -> 이는, 휴대전화 정규식 검사를 2번하는것과 동일하므로 그냥 제외할 것.
                     alert("휴대전화를 제대로 입력해주세요.");
                     return;
                 } else if (nickname.value == "" || !regexNickname()) {
@@ -685,16 +689,15 @@
                     alert("우편번호 찾기를 진행해주세요.");
                     return;
                 } else if (!id.readOnly) {
-                    // id.readOnly == false이면, 입력창이 잠겨있지 않고, 이는 중복검사 통과를 못한 상태임
                     alert("아이디 중복검사를 해주세요.");
                     return;
                 } else if (!nickname.readOnly) {
                     alert("닉네임 중복검사를 해주세요.");
                     return;
-                } else if (!verification_input.readOnly) { 
+                } else if (!verification_input.readOnly) {
                     alert("휴대전화 인증을 해주세요.");
                     return;
-                } else { // 모든 검사를 통과하면, 휴대전화/주소 값 합쳐서 양식 제출
+                } else {
                     document.getElementById("user_phone").value = phone1.value + phone2.value + phone3.value;
                     document.getElementById("user_address").value = postcode.value + " " + roadAddr.value + " " + detailAddr.value + extraAddr.value;
                     document.getElementById("signupForm").submit();
@@ -744,6 +747,7 @@
                 }
             }).open();
         }
+
 
     </script>
 </body>

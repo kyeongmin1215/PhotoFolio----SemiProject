@@ -57,6 +57,7 @@ public class Admin_BoardController extends HttpServlet {
 			try {
 				recordTotalCnt = dao.getPostListCnt();
 			}catch(Exception e) {
+				response.sendRedirect("/error.jsp");
 				e.printStackTrace();
 			}
 			HashMap<String, Object> naviMap = service.getPageNavi(currentPage, recordTotalCnt); // 네비바 시작/끝 숫자, 앞뒤 버튼 여부
@@ -93,6 +94,7 @@ public class Admin_BoardController extends HttpServlet {
 					recordTotalCnt = dao.getPostByTitleOrContentCnt(value);
 				}
 			}catch(Exception e) {
+				response.sendRedirect("/error.jsp");
 				e.printStackTrace();
 			}
 			HashMap<String, Object> naviMap = service.getPageNavi(currentPage, recordTotalCnt);
@@ -113,6 +115,7 @@ public class Admin_BoardController extends HttpServlet {
 			try {
 				rs = dao.deletePost(post_no);
 			}catch(Exception e) {
+				response.sendRedirect("/error.jsp");
 				e.printStackTrace();
 			}
 			if(rs!=-1) {
@@ -121,6 +124,7 @@ public class Admin_BoardController extends HttpServlet {
 				try {
 					recordTotalCnt = dao.getPostListCnt();
 				}catch(Exception e) {
+					response.sendRedirect("/error.jsp");
 					e.printStackTrace();
 				}
 				HashMap<String, Object> naviMap = service.getPageNavi(currentPage, recordTotalCnt); // 네비바 시작/끝 숫자, 앞뒤 버튼 여부
@@ -147,6 +151,7 @@ public class Admin_BoardController extends HttpServlet {
 			 * // 게시글 조회수 +1 dao.post_viewCount(post_no);
 			 */
 
+			try {
 			BoardDTO dto = boardDao.selectBySeq(post_no);
 			FileDAO daoFile = new FileDAO();
 			FileDTO dtoFile = daoFile.getFileNames(post_no); // 파일 가져오는 작업
@@ -158,6 +163,10 @@ public class Admin_BoardController extends HttpServlet {
 				request.setAttribute("daoFile", daoFile);
 				request.setAttribute("dtoFile", dtoFile);/* 사진경로 */
 				rd.forward(request, response);
+			}
+			}catch(Exception e) {
+				response.sendRedirect("/error.jsp");
+				e.printStackTrace();
 			}
 		}else if(cmd.equals("/modifyProc.admBo")){
             FileDAO daoFile = new FileDAO();
@@ -211,20 +220,23 @@ public class Admin_BoardController extends HttpServlet {
 				}
 
 			} catch (Exception e) {
+				response.sendRedirect("/error.jsp");
 				e.printStackTrace();
 			}
 
 		}else if (cmd.equals("/deleteProc.admBo")) {
 			int post_no = Integer.parseInt(request.getParameter("post_no"));
 			System.out.println("삭제할 post_no : " + post_no);
-
+			try {
 			int rs = boardDao.deleteByPost(post_no);
 			if (rs != -1)
 				response.sendRedirect("/toBoardManagement.admBo?currentPage=1");
-		} 
+		} catch (Exception e) {
+			response.sendRedirect("/error.jsp");
+			e.printStackTrace();
+		}
 	
-
-
+		
 	}
-
+	}
 }

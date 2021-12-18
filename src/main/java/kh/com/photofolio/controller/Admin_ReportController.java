@@ -51,6 +51,7 @@ public class Admin_ReportController extends HttpServlet {
 			try {
 				recordTotalCnt = dao.getReportListCnt();
 			}catch(Exception e) {
+				response.sendRedirect("/error.jsp");
 				e.printStackTrace();
 			}
 			
@@ -91,6 +92,7 @@ public class Admin_ReportController extends HttpServlet {
 					recordTotalCnt = dao.getReportByReportContentCnt(value);
 				}
 			}catch(Exception e) {
+				response.sendRedirect("/error.jsp");
 				e.printStackTrace();
 			}
 			System.out.println("search_category : "+search_category);
@@ -111,6 +113,7 @@ public class Admin_ReportController extends HttpServlet {
 			try {
 				rs = dao.deleteReport(report_no);
 			}catch(Exception e) {
+				response.sendRedirect("/error.jsp");
 				e.printStackTrace();
 			}
 			if(rs!=-1) {
@@ -119,6 +122,7 @@ public class Admin_ReportController extends HttpServlet {
 				try {
 					recordTotalCnt = dao.getReportListCnt();
 				}catch(Exception e) {
+					response.sendRedirect("/error.jsp");
 					e.printStackTrace();
 				}
 				
@@ -164,6 +168,7 @@ public class Admin_ReportController extends HttpServlet {
 					rd.forward(request, response);
 				}
 			}catch(Exception e) {
+				response.sendRedirect("/error.jsp");
 				e.printStackTrace();
 			}
 		}

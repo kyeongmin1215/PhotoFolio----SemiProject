@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.google.gson.Gson;
 import com.oreilly.servlet.MultipartRequest;
 import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 
@@ -59,13 +60,13 @@ public class MemberController extends HttpServlet {
 		// 카카오 로그인 화면으로 이동
 		else if(cmd.equals("/toKakaoLogin.mem")) {
 			System.out.println("값 들어옴");
-			response.sendRedirect("https://kauth.kakao.com/oauth/authorize?client_id=1aa69c59652259654fc77887234bfc8e&redirect_uri=http://localhost/kakaoCallbackProc.mem&response_type=code");
+			response.sendRedirect("https://kauth.kakao.com/oauth/authorize?client_id=1aa69c59652259654fc77887234bfc8e&redirect_uri=http://13.209.15.51:8080/kakaoCallbackProc.mem&response_type=code");
 		}
 		// 아이디 찾기 팝업창으로 이동
 		else if(cmd.equals("/toFindId.mem")) {
 			response.sendRedirect("/member/findIdPopup.jsp");
 		}
-		// 패스워드 찾기 팝업창으로 이동
+		 //패스워드 찾기 팝업창으로 이동
 		else if(cmd.equals("/toFindPw.mem")) {
 			response.sendRedirect("/member/findPwPopup.jsp");
 		}
@@ -85,7 +86,7 @@ public class MemberController extends HttpServlet {
 					out.write("false");
 				}
 			} catch(Exception e) {
-				response.sendRedirect("//error.jsp");
+				response.sendRedirect("/error.jsp");
 				e.printStackTrace();
 			}
 		}
@@ -151,7 +152,7 @@ public class MemberController extends HttpServlet {
 		// 회원가입 폼 제출
 		else if(cmd.equals("/signupProc.mem")) {
 			// 저장 경로 지정 - 경로 지정 논의 필요
-			String filePath = request.getServletContext().getRealPath("/upload");
+			String filePath = request.getServletContext().getRealPath("/profileImgUpload");
 			System.out.println("filePath : " + filePath);
 			File dir = new File(filePath);
 			if(!dir.exists()) { // 저장 경로 존재 확인 후 생성
@@ -175,14 +176,14 @@ public class MemberController extends HttpServlet {
 				boolean isNumeric =  user_id.matches("[+-]?\\d*(\\.\\d+)?");
 				System.out.println(isNumeric);
 				// 프로필 이미지 경로 처리
-				if(profilePhoto_path == null) { // 프로필 이미지 업로드를 하지 않은 경우
-					if(multi.getParameter("input_profileImgUrl").equals("")) { // null이 아님을 유의할 것
-						// 카카오 회원이 아니면, 기본 프사 경로를 프로필 이미지 경로에 넣기
-						profilePhoto_path = "/resource/imgTmp/squid-game-6723533_960_720.webp";
-					} else { 
-						// 카카오 회원이라면, 카카오 프사 경로를 프로필 이미지 경로에 넣기
+				if (profilePhoto_path == null) {
+					if (multi.getParameter("input_profileImgUrl").equals("")) {
+						profilePhoto_path = "/profileImgUpload/squid-game-6723533_960_720.webp";
+					} else {
 						profilePhoto_path = multi.getParameter("input_profileImgUrl");
 					}
+				} else {
+					profilePhoto_path = "/profileImgUpload/" + profilePhoto_path;
 				}
 				// 패스워드 암호화
 				user_password = EncryptionUtils.getSHA512(user_password);
@@ -195,21 +196,14 @@ public class MemberController extends HttpServlet {
 				System.out.println("user_email : " + user_email);
 				System.out.println("user_address : " + user_address);
 				// DB 저장 & 메인화면 이동(id가 숫자가 아니면(일반회원)-유저타입=1//id가 숫자면(카카오회원)-유저타입=3)
-				if(isNumeric == false) {//일반회원
+				
 				int rs = dao.insert(new MemberDTO(user_id, 1, user_email, user_password, user_phone, user_nickname, user_address, profilePhoto_path, null));
 				if(rs > 0) {
 					System.out.println("저장 성공");
 				} else {
 					System.out.println("저장 실패");
 				}
-				}else {//카카오회원
-					int rs = dao.insert(new MemberDTO(user_id, 3, user_email, user_password, user_phone, user_nickname, user_address, profilePhoto_path, null));
-					if(rs > 0) {
-						System.out.println("저장 성공");
-					} else {
-						System.out.println("저장 실패");
-					}	
-				}
+				
 				response.sendRedirect("/");
 				
 			} catch(Exception e) {
@@ -389,12 +383,16 @@ public class MemberController extends HttpServlet {
 			HashMap<String, String> map = (HashMap)session.getAttribute("loginSession");
 	    	String id = map.get("user_id");
 	    	System.out.println("탈퇴할 id : " + id);
-	    	
+	    	try {
 	    	int rs = dao.deleteId(id);
 	    	
 	    	if(rs != -1) {
 	    		session.invalidate();
 	    		response.sendRedirect("/");
+	    	}
+	    	}catch(Exception e) {
+	    		response.sendRedirect("/error.jsp");
+	    		e.printStackTrace();
 	    	}
 		}
 		//비밀번호 변경버튼눌렀을시 비밀번호 확인 팝업으로 
@@ -452,7 +450,7 @@ public class MemberController extends HttpServlet {
 		}
 		else if(cmd.equals("/modifyProc.mem")) {
 			// 저장 경로 지정 - 경로 지정 논의 필요
-						String filePath = request.getServletContext().getRealPath("/upload");
+						String filePath = request.getServletContext().getRealPath("/profileImgUpload");
 						System.out.println("filePath : " + filePath);
 						File dir = new File(filePath);
 						if(!dir.exists()) { // 저장 경로 존재 확인 후 생성
@@ -489,10 +487,11 @@ public class MemberController extends HttpServlet {
 							System.out.println("서브닉네임 : " + subNN);
 							
 							
-							if(profilePhoto_path == null) {
-								// 프사 업로드 안했으면, 기존프로필사진 불러올것 
+							if (profilePhoto_path == null) {
 								profilePhoto_path = dto.getProfilePhoto_path();
 								System.out.println("대체사진이름 : " + profilePhoto_path);
+							} else {
+								profilePhoto_path = "/profileImgUpload/" + profilePhoto_path;
 							}
 							
 							// DB 저장 & 메인화면 이동(일반 회원 user_type default = 1)
@@ -511,17 +510,21 @@ public class MemberController extends HttpServlet {
 							} else {
 								System.out.println("저장 실패");
 							}
-							
+							MemberDTO dto2 = dao.selectById(user_id);
+							System.out.println("dto안의 사진 : " + dto.getProfilePhoto_path());
 							HashMap<String, String> map = (HashMap)session.getAttribute("loginSession");
 							String photo = map.get("profilePhoto_path");
-							System.out.println(photo);
-							map.replace("profilePhoto_path", dto.getProfilePhoto_path());
-							map.replace("user_address", dto.getUser_address());
-							map.replace("user_email", dto.getUser_email());
-							map.replace("user_phone", dto.getUser_phone());
-							map.replace("user_nickname", dto.getUser_nickname());
+							String nickname = map.get("user_nickname");
+							System.out.println("기존닉네임 : " + nickname);
+							map.replace("profilePhoto_path", dto2.getProfilePhoto_path());
+							map.replace("user_address", dto2.getUser_address());
+							map.replace("user_email", dto2.getUser_email());
+							map.replace("user_phone", dto2.getUser_phone());
+							map.replace("user_nickname", dto2.getUser_nickname());
 							String photo2 = map.get("profilePhoto_path");
-							System.out.println(photo2);
+							String nickname2 = map.get("user_nickname");
+							System.out.println("변경 후 사진 : " + photo2);
+							System.out.println("변경닉네임 : " + nickname2);
 							session.setAttribute("loginSession", map);
 							response.sendRedirect("/toMyPage.mem");
 							
@@ -535,6 +538,45 @@ public class MemberController extends HttpServlet {
 			System.out.println("요청완료");
 			response.sendRedirect("/index.jsp");
 		}
+		
+		//프로필 사진값 가져오기 
+	      else if(cmd.equals("/selectPhoto.mem")) {
+	         if(session.getAttribute("loginSession") != null) {
+	            HashMap<String, String> map = (HashMap)session.getAttribute("loginSession");
+	            String id = map.get("user_id");
+	            Gson gson = new Gson();
+	            try {
+	               String photo = dao.selectPhoto(id);
+	               System.out.println("사진이름 : " + photo);
+	               if(photo != null) {
+	                  response.getWriter().write(gson.toJson(photo));
+	               } else {
+	                  response.getWriter().write("fail");
+	               }
+	            } catch(Exception e) {
+	               response.sendRedirect("/error.jsp");
+	               e.printStackTrace();
+	            }
+	         }
+	      }else if(cmd.equals("/selectNN.mem")) {
+	    	  if(session.getAttribute("loginSession") != null) {
+		            HashMap<String, String> map = (HashMap)session.getAttribute("loginSession");
+		            String id = map.get("user_id");
+		            Gson gson = new Gson();
+		            try {
+		               String nickname = dao.selectNN(id);
+		               System.out.println("닉네임 : " + nickname);
+		               if(nickname != null) {
+		                  response.getWriter().write(gson.toJson(nickname));
+		               } else {
+		                  response.getWriter().write("fail");
+		               }
+		            } catch(Exception e) {
+		               response.sendRedirect("/error.jsp");
+		               e.printStackTrace();
+		            }
+		         }
+	      }
 		
 	} // actionDo
 

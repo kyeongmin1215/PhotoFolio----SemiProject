@@ -31,7 +31,7 @@ public class FileDAO {
 	}
 	
 	// 파일(사진) 리스트
-	public FileDTO getFileNames(int seq) {
+	public FileDTO getFileNames(int seq) throws Exception{
 		String sql = "select * from tbl_file where post_no=?";
 
 		try (Connection con = this.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql)) {
@@ -46,14 +46,12 @@ public class FileDAO {
 				String system_name = rs.getString("system_name");
 				return new FileDTO(seq_file, seq_post, origin_name, system_name);
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 		return null;
 	}
 
 	// 시스템 네임 불러오기
-			public String getSystemName(int seq) {
+			public String getSystemName(int seq) throws Exception {
 				String sql = "select system_name from tbl_file where post_no=?";
 				try (Connection con = this.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql)) {
 
@@ -63,14 +61,12 @@ public class FileDAO {
 					if (rs.next()) {
 						return rs.getString("system_name");
 					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+				} 
 				return null;
 			}
 			
 	// 오리지널 네임 불러오기
-	public String getOriginName(int seq) {
+	public String getOriginName(int seq) throws Exception{
 		String sql = "select origin_name from tbl_file where post_no=?";
 		try (Connection con = this.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql)) {
 
@@ -80,16 +76,14 @@ public class FileDAO {
 			if (rs.next()) {
 				return rs.getString("origin_name");
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		} 
 		return null;
 	}
 
 
 	
 	// 파일 추가
-	public int insertFile(int post_no, String origin_name, String system_name) {
+	public int insertFile(int post_no, String origin_name, String system_name) throws Exception{
 		String sql = "insert into tbl_file values(seq_file.nextval, ?, ?, ?)";
 
 		try (Connection con = this.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql);) {
@@ -103,14 +97,12 @@ public class FileDAO {
 			int rs = pstmt.executeUpdate();
 			if (rs != -1)
 				return rs;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		} 
 		return -1;
 	}
 	
 	// 파일 수정
-		public int modifyByPostNo(String origin_name, String system_name, int post_no) {
+		public int modifyByPostNo(String origin_name, String system_name, int post_no) throws Exception {
 			String sql = "update tbl_file set origin_name=?, system_name=? where post_no=?";
 			try (Connection con = this.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql);) {
 
@@ -122,14 +114,12 @@ public class FileDAO {
 				if (rs != -1)
 					return rs;
 
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			} 
 			return -1;
 		}
 
 		// 파일 삭제
-		public int deleteByPostNo(int post_no) {
+		public int deleteByPostNo(int post_no) throws Exception{
 			String sql = "delete form tbl_file where post_no=?";
 			try (Connection con = this.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql);) {
 				pstmt.setInt(1, post_no);
@@ -138,14 +128,12 @@ public class FileDAO {
 				if (rs != -1)
 					return rs;
 
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			} 
 			return -1;
 		}
 		
 	// 파일 불러오기(tbl_post와 tbl_file 이너조인)
-	public ArrayList<FileDTO> selectAll(String id) {
+	public ArrayList<FileDTO> selectAll(String id) throws Exception {
 		String sql= "select * from tbl_file inner join tbl_post on tbl_post.post_no = tbl_file.post_no where tbl_post.post_writer=?";
 		try (Connection con = this.getConnection();
 				PreparedStatement pstmt = con.prepareStatement(sql);) {
@@ -161,13 +149,11 @@ public class FileDAO {
 				list.add(new FileDTO(seq_file, post_no, origin_name, system_name));
 			}
 			return list;
-		}catch(Exception e) {
-			e.printStackTrace();
 		}
-		return null;
+	
 	}
 	
-	public ArrayList<FileDTO> select() {
+	public ArrayList<FileDTO> select() throws Exception{
 		String sql= "select * from tbl_file order by 1 DESC";
 		try (Connection con = this.getConnection();
 				PreparedStatement pstmt = con.prepareStatement(sql);) {
@@ -183,10 +169,8 @@ public class FileDAO {
 				list.add(new FileDTO(seq_file, post_no, origin_name, system_name));
 			}
 			return list;
-		}catch(Exception e) {
-			e.printStackTrace();
 		}
-		return null;
+	
 	}
 
 }

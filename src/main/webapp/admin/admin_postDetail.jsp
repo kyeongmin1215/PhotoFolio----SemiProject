@@ -73,6 +73,7 @@
 .writerInfo{
     margin-left:10px;
 }
+
 .uploadBox {
 	width: 1000px;
 	margin: auto;

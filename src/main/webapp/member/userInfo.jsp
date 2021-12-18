@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>PhotoFolio</title>
+<title>개인정보페이지</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
     <script type="text/javascript">
@@ -26,13 +26,18 @@
     top:0.625rem; /*10px*/
     left:48.75rem; /*780px*/
 }
-/*유저전체정보창(하늘색부분)*/
+/*유저전체정보창(연한색부분)*/
+#user_id, #user_nickname, #image, #user_email, #phone_first, #phone_second, #phone_third, #user_address, #sample4_postcode,
+#sample4_roadAddress, #sample4_detailAddress, #sample4_extraAddress{
+	background-color:#ececf8;
+	
+}
 .userInfo{
 	position:absolute;
- 
+ 	border-radius:10px;
     width:75rem; /*1200px*/
     height:78.125rem; /*1250px*/
-    background-color: aliceblue;
+    background-color: #ececf8;
     left:20.625rem; /*330px*/
 }
 .EveryInput{
@@ -51,7 +56,7 @@
   #image_container{
             width: 22.188rem; /*355px*/
             height: 22.188rem; /*355px*/  
-            background-image: url("/upload/${dto.getProfilePhoto_path()}");
+            background-image: url("${dto.getProfilePhoto_path()}");
             background-size: cover;
             background-repeat: no-repeat;
             border-radius: 50%;
@@ -65,7 +70,7 @@
     height: 100%;
     object-fit:cover;
         }
-#nicknameCheck, #nicknameBack, #emailCheck, #emailBack, #phoneBack, #phone_verification {
+#nicknameCheck, #nicknameBack, #emailCheck, #emailBack, #phoneBack, #phone_verification{
 	display:none;
 }
  #nicknameBack, #emailBack, #phoneBack{
@@ -83,17 +88,26 @@
 .clsBtn{
 	width:6.875rem; /*110px*/ 
 }
+
 .btnMD{
 	width:8.125rem; /*130px*/
 }
+
 /*첫 시작화면시 버튼*/
 .btnBox-first{
    /*position: absolute;*/
-   text-aling:center;
+   text-align:center;
    width:56.25rem; /*900px*/
    padding-left:50px;
-   top:68.75rem; /*1100px*/
+   
    visibility: visible;
+   
+}
+.btnBox-first2{
+	padding-left:210px;
+}
+.btnBox-first2>div{
+	text-align:center;
 }
 .btnBox-first>div{
 	text-align:center;
@@ -158,9 +172,9 @@
     				<div class="col-3 label">Profile Image</div>
     				<div class="col-4">
        					 <div class="input-group mb-3">
-       					 <c:if test="${empty loginSession.get('access_token') }">
+       					 
        					 	<input type="file" class="form-control" name="file" accept="image/*" id="image" onchange="setThumbnail(event);" disabled>
-       					 </c:if>
+       					
      	   		    	</div>
     				</div>
 				    <div class="col-5" id="image_container"></div>
@@ -269,26 +283,43 @@
                         <input type="text" id="sample4_extraAddress" class="form-control" placeholder="참고항목" readonly>
                     </div>
                 </div>
-                <div class="row btnBox-first">
-                    <div class="col-3">
-                        <button type="button" class="btn btn-success" id="btnModify">개인정보수정</button>
-                    </div>
-                    <div class="col-3" id="btnPwModifyBox">
-                        <button type="button" class="btn btn-info" id="btnPwModify">비밀번호변경</button>
-                    </div>
-                    <div class="col-3">
-                        <button type="button" class="btn btn-danger" id="btnDelete">회원탈퇴</button>
-                    </div>
-                    <div class="col-3">
-                        <button type="button" class="btn btn-dark" id="btnHome">홈으로</button>
-                    </div>
-                </div>
+                <c:choose>
+                	<c:when test="${empty loginSession.get('access_token') }">
+                		<div class="row btnBox-first">
+		                    <div class="col-3">
+		                        <button type="button" class="btn btn-outline-success" id="btnModify">개인정보수정</button>
+		                    </div>
+		                    <div class="col-3" id="btnPwModifyBox">
+		                        <button type="button" class="btn btn-outline-info" id="btnPwModify">비밀번호변경</button>
+		                    </div>
+		                    <div class="col-3">
+		                        <button type="button" class="btn btn-outline-danger" id="btnDelete">회원탈퇴</button>
+		                    </div>
+		                    <div class="col-3">
+		                        <button type="button" class="btn btn-outline-dark" id="btnHome">홈으로</button>
+		                    </div>
+		                </div>
+                	</c:when>
+                	<c:otherwise>
+                		<div class="row btnBox-first2">
+		                    <div class="col-3">
+		                        <button type="button" class="btn btn-outline-success" id="btnModify2">개인정보수정</button>
+		                    </div>
+		                    <div class="col-3">
+		                        <button type="button" class="btn btn-outline-danger" id="btnDelete">회원탈퇴</button>
+		                    </div>
+		                    <div class="col-3">
+		                        <button type="button" class="btn btn-outline-dark" id="btnHome">홈으로</button>
+		                    </div>
+		                </div>
+                	</c:otherwise>
+                </c:choose>
                 <div class="row btnBox-last">
                     <div class="col-3">
-                        <button type="button" class="btn btn-success" id="btnGo">완료</button>
+                        <button type="button" class="btn btn-outline-success" id="btnGo">완료</button>
                     </div>
                     <div class="col-3">
-                        <button type="button" class="btn btn-dark" id="btnBack">뒤로가기</button>
+                        <button type="button" class="btn btn-outline-dark" id="btnBack">뒤로가기</button>
                     </div>
                 </div>
             </div>
@@ -381,6 +412,19 @@
             $("#nicknameMD").attr("disabled", false);
             $("#emailMD").attr("disabled", false);
             $(".btnBox-first").css("visibility", "hidden");
+            $(".btnBox-last").css("visibility", "visible");
+            $("#image").attr("disabled", false);
+        })
+        
+        $("#btnModify2").click(function(){
+            $("#btnUpload").attr("readonly", false);        
+            $("#phoneMD").attr("disabled", false);
+            $("#sample4_detailAddress").attr("readonly", false);
+            $("#postbtn").attr("disabled", false);
+            $("#btnUpload").attr("disabled",false);
+            $("#nicknameMD").attr("disabled", false);
+            $("#emailMD").attr("disabled", false);
+            $(".btnBox-first2").css("visibility", "hidden");
             $(".btnBox-last").css("visibility", "visible");
             $("#image").attr("disabled", false);
         })
@@ -705,12 +749,38 @@
               // test
               console.log(photoPath);
                    
-        //카카오 로그인일 경우 비밀번호 수정버튼 감추기 
-        	if(kakaoLog != ""){
-        		$("#btnPwModifyBox").css({
-        			"display" : "none"
-        		})
-        	}
+           // 이미지 미리보기 할때 사진 변환
+              function readInputFile(e){
+                  let sel_files = [];
+                  
+                  sel_files = [];
+                  $('#image_container').empty();
+                  
+                  let files = e.target.files;
+                  let fileArr = Array.prototype.slice.call(files);
+                  let index = 0;
+                  
+                  fileArr.forEach(function(f){
+                	  if(!f.type.match("image/*")){
+                          alert("이미지 확장자만 업로드 가능합니다.");
+                           return;
+                       };
+
+                      if(files.length > 2){
+                         sel_files.push(f);
+                         console.log(f.type);
+                          let reader = new FileReader();
+                          reader.onload = function(e){
+                             let html = `<a id=img_id_${index}><img src=${e.target.result} data-file=${f.name} /></a>`;
+                              $("#preiew").append(html);
+                              index++;
+                              alert("사진은 1장만 등록 할 수 있습니다.");
+                          };
+                          reader.readAsDataURL(f);
+                      }
+                  })
+              }
+              $('#image').on('change',readInputFile);  
        
 		
 		// 완료 버튼 - 공백없고, 정규식 검사 모두 다시 돌려서 통과하면 submit처리(프로필 사진, 상세주소는 필수 아님)

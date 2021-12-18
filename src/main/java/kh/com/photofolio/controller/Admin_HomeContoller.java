@@ -31,6 +31,7 @@ public class Admin_HomeContoller extends HttpServlet {
 			today_post = postDao.today_postCnt(); // 오늘 게시물 수
 			today_report = reportDao.today_reportCnt(); //오늘 신고 수
 		}catch(Exception e) {
+			response.sendRedirect("/error.jsp");
 			e.printStackTrace();
 		}
 		

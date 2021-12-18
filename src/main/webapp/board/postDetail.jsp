@@ -5,9 +5,12 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>게시글상세조회</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 <link rel="icon" type="image/png" href="http://example.com/myicon.png"> 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
 <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
 <script type="text/javascript">
         $(document).ready(function(){
@@ -25,6 +28,7 @@
 	width:1200px;
 	height:auto;
 	margin:auto;
+	
 }
 
 /*댓글 전체 컨테이너 */
@@ -64,11 +68,14 @@
 }
 #post_title{
 	border:none;
+	width:100%;
+	font-family: 'Jua', sans-serif;
 }
 .uploadBox{
 	width:1000px;
 	margin:auto;
 	display:none; /*수정버튼 클릭시 보이게할것*/
+	
 }
 .photoBox{
 	width:1000px;
@@ -86,6 +93,7 @@
 	resize:none;
 	border:none;
 	overflow-y: hidden;
+	font-family: 'Jua', sans-serif;
 
 }
 
@@ -111,18 +119,18 @@
 	display:none; /*초기화면이면 none*/
 }
 #beforeGoodBtn{
-	color:blue;
-	border:1px solid blue;
-	background-color:white;
+	color:white;
+	border:1px solid rgb(86, 86, 196);
+	background-color:rgb(86, 86, 196);
 }
 
 #afterGoodBtn{
 	color:white;
-	background-color: blue;
+	background-color:rgb(86, 86, 196);
 }
 /*따봉 색깔 논의 필요*/
 #afterGoodBtn>svg{
-	color:gray;
+	color:white;
 }
 
 /*==================================================================*/
@@ -132,6 +140,7 @@
 }
 .cmt-showBox{
 	margin-left:30px;
+	
 	
 }
 .cmt-showBox>div{
@@ -147,6 +156,7 @@
 	border:none;
 	width:400px;
 	overflow:visible;
+
 
 
 }
@@ -234,8 +244,8 @@
 								value="${dto.getPost_title() }" readonly> 
             				</h2>
             			</div>
-            			<!-- 신고버튼 -->
-            			<c:if test="${!empty loginSession}">
+            			<!-- 신고버튼(자기게시글에는 신고X) -->
+            			<c:if test="${dto.getPost_writer() != loginSession.get('user_id')}">
 	            			<div class="col-1" id="reportBtnBox">
 	            				<button type="button" value="게시글번호 넣어주세요." class="btn btn-danger" id="btnReport">
 	            					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-exclamation-diamond-fill" viewBox="0 0 16 16">
@@ -287,15 +297,15 @@
 	                <c:if test="${id eq loginSession.get('user_id')}">
 	            		<div class="row my-4 btnBox" id="btnsBox">
 	            			<div class="col">
-		            			<button type="button" id="btnModify" class="btn btn-dark">Edit</button>
-		            			<button type="button" id="btnDelete" class="btn btn-dark">Delete</button>
+		            			<button type="button" id="btnModify" class="btn btn-dark">수정</button>
+		            			<button type="button" id="btnDelete" class="btn btn-dark">삭제</button>
 	            			</div>
 	            		</div>
 	            		<!-- 수정버튼 누를경우 완료, 취소 버튼 나타내기 -->
 	            		<div class="row my-4 btnBox" id="btnModifyDetailBox">
 	            			<div class="col">
-	            				<button type="button" id="btnGo" class="btn btn-dark">Confirm</button>
-		            			<button type="button" id="btnBack" class="btn btn-dark">Cancel</button>
+	            				<button type="button" id="btnGo" class="btn btn-dark">등록</button>
+		            			<button type="button" id="btnBack" class="btn btn-dark">취소</button>
 	            			</div>
 	            		</div>
             		</c:if>
@@ -422,21 +432,58 @@
     		reader.readAsDataURL(event.target.files[0]);
     	}
 	
-	// 수정 확인 버튼 처리 
-	$("#btnGo").on("click", function(){
-		let photo_path = document.getElementById("formFileSm");
-		let post_title = document.getElementById("post_title")
-		let post_content = document.getElementById("post_content");
-		
-		 if(post_title.value == "") {
-            alert("제목을 입력 해주세요.");
-            return;
-		 }  else if (post_content.value == "") {
-            alert("내용을 입력 해주세요.");
-            return;
-         }
-         $("#modifyPost").submit();
-	})
+    // 이미지 미리보기 할때 사진 변환
+    function readInputFile(e){
+        let sel_files = [];
+        
+        sel_files = [];
+        $('#preview').empty();
+        
+        let files = e.target.files;
+        let fileArr = Array.prototype.slice.call(files);
+        let index = 0;
+        
+        fileArr.forEach(function(f){
+        	 if(!f.type.match("image/*")){
+                 alert("이미지 확장자만 업로드 가능합니다.");
+                  return;
+              };
+
+            if(files.length > 2){
+               sel_files.push(f);
+               console.log(f.type);
+                let reader = new FileReader();
+                reader.onload = function(e){
+                   let html = `<a id=img_id_${index}><img src=${e.target.result} data-file=${f.name} /></a>`;
+                    $("#preiew").append(html);
+                    index++;
+                    alert("사진은 1장만 등록 할 수 있습니다.");
+                };
+                reader.readAsDataURL(f);
+            }
+        })
+    }
+    $('#formFileSm').on('change',readInputFile);
+
+    
+    // 수정 확인 버튼 처리 
+    $("#btnGo").on("click", function(){
+       let photo_path = document.getElementById("formFileSm");
+       let post_title = document.getElementById("post_title")
+       let post_content = document.getElementById("post_content");
+       let fileType = /(.*?)\.(jpg|jpeg|png|gif|bmp|pdf)$/;
+       let imgFile = $('#formFileSm').val();
+       
+        if(post_title.value == "") {
+             alert("제목을 입력 해주세요.");
+             return;
+        }else if (post_content.value == "") {
+             alert("내용을 입력 해주세요.");
+             return;
+          }
+          $("#modifyPost").submit();
+    })
+
 	
 	// 게시물 삭제 버튼
 	$("#btnDelete").on("click", function(){
@@ -497,10 +544,10 @@
 				console.log(data);
 				$(".cmt-showBox").empty();
 				for(let cmt_dto of data){
-							let comment = "<div class='row mb-2 mx-1 my-3'>"
-							+ "<div class='col-6'>"
-							+ "<div id='comment_content' name='comment_content'>" + cmt_dto.content + "</div>"
-							+ "<button tpye='button' id = 'cmtReport' value='" + cmt_dto.comment_no + "' class='btn btn-danger btn-sm cmtReport'>신고</button>"
+							let comment = 
+						     "<div class='row mb-2 mx-1 my-3'>"
+							+ "<div class='col-6 tempBox'>"
+							+ "<div value='" + cmt_dto.comment_no + "' id='comment_content' name='comment_content'>" + cmt_dto.content + "</div>"	
 							+ "</div>"
 							+ "<div class='col-3'>"
 							+ cmt_dto.user_nickname +  "|" +cmt_dto.createdDate
@@ -509,39 +556,46 @@
 							+ "</div>"
 							+ "</div>"
 							+"<form method='post' id='modiCmtForm'>"
-							+ "<div class='modiBox' name = 'modiBox' value='" + cmt_dto.comment_no + "' hidden>"
+							+ "<div class='modiBox' id='modiBox' value='" + cmt_dto.comment_no + "' hidden>"
 							+"<div class='row mx-2 mb-2 mt-2'>"
 							+"<div class='col'>"
                 			+"<label>댓글수정</label>"
 	                		+"</div>"
 	                		+"<div class='row mx-2  comment-body'>"
 							+"<div class='col-10 comment-input'>"
-							+"<textarea id='modi_content_cmt' class='modi_content_cmt' name='"+cmt_dto.comment_no+"' onkeydown='resize(this)' onkeyup='resize(this)'>"+cmt_dto.content +"</textarea>"
+							+"<textarea id='modi_content_cmt' class='modi_content_cmt' name='" +cmt_dto.comment_no+ "' onkeydown='resize(this)' onkeyup='resize(this)'>"+cmt_dto.content +"</textarea>"
 							+"</div>"
 							+"<div class='col-2 comment-input'>"
-							+"<button type='button' id='btnReGo'  value='" + cmt_dto.comment_no + "' class='btn btn-dark btnReGo'>Edit</button>"
+							+"<button type='button' id='btnReGo'  value='" + cmt_dto.comment_no + "' class='btn btn-dark btnReGo'>등록</button>"
 							+"</div>"
 							+"</div>"
 							+ "</div>"
 							+"</form>"
+						
 							$(".cmt-showBox").append(comment);
 							
-							
+							let btn=""
 							
 							if("${loginSession.get('user_id')}" == cmt_dto.user_id){
 										let btns="<div class='col-3' class='reBtnBox' id='beforeReBtnBox'>"
-										+" <button type='button' id='btnReModify' value='" +cmt_dto.comment_no + "' class='btn btn-dark btn-sm btnReModify'>Edit</button>"
-										+ "<button type='button' id='btnReDelete' value='" + cmt_dto.comment_no + "' class='btn btn-dark btn-sm'>Delete</button>"
+										+" <button type='button' id='btnReModify' value='" +cmt_dto.comment_no + "' class='btn btn-dark btn-sm btnReModify'>수정</button>"
+										+ "<button type='button' id='btnReDelete' value='" + cmt_dto.comment_no + "' class='btn btn-dark btn-sm'>삭제</button>"
 										+"</div>"
 										+"<div class='col-3' class='reBtnBox' id='afterReBtnBox'>"
-										+"<button type='button' id='btnReBack' class='btn btn-dark btn-sm'>Cancel</button>"
+										+"<button type='button' id='btnReBack' class='btn btn-dark btn-sm'>취소</button>"
 										+"</div>"
 
 										$(".btnBox:last").append(btns);
-										
-										    
-									}
 							
+										
+									}
+							//자기게시글에는 신고X
+							if("${loginSession.get('user_id')}" != cmt_dto.user_id){
+								
+								let report =  "<button tpye='button' id = 'cmtReport' value='" + cmt_dto.comment_no + "' class='btn btn-danger btn-sm cmtReport'>신고</button>"
+								
+								$(".tempBox:last").append(report)
+							}
 							}
 				}else{
 					console.log("수신실패");
@@ -623,11 +677,11 @@
 		})
 		//좋아요 해제할 경우
 		$("#afterGoodBtn").click(function(){
-			// $("#beforeGoodBtnBox").css("display","block");
-			// $("#afterGoodBtnBox").css("display","none");
-			changeDisplay_goodBtn("block", "none");
-			goodCount("remove"); // 좋아요 -1 메서드 호출
-		})
+			 if (confirm("좋아요를 취소하시겠습니까?")) {
+                 changeDisplay_goodBtn("block", "none");
+                 goodCount("remove");
+             }
+         })
 
 		// 좋아요 판별
 		if(${likeCheck}) { 
@@ -668,15 +722,15 @@
 		}
 		
 		 //댓글수정버튼 클릭시 확인,취소버튼 나오면서 인풋창 readonly해제          
-		$(document).on('click', '.btnReModify', function(e){
-			var index = $(this).val();
+		 $(document).on('click', '.btnReModify', function(e){
+         var index = $(this).val();
             console.log(index);
-			console.log("------------");
-			console.log($("div[value='"+index+"']"));
-			$(this).parent().css("display", "none");
-			$(this).parent().next().css("display", "block");
-			$("div[value='"+index+"']").attr("hidden",false);
-		})
+         console.log("------------");
+         console.log($("div[value='"+index+"']"));
+         $(this).parent().css("display", "none");
+         $(this).parent().next().css("display", "block");
+         $("div[value='"+index+"']").attr("hidden",false);
+      });
 		
 		
 		
@@ -713,25 +767,24 @@
 			});
 		})
 		
-		//버튼 클릭 시 댓글 최종 수정 
 		$(document).on('click', '#btnReGo', function(){
-			let data =  $("#modiCmtForm").serialize();
-			let value = $(this).val();
-			console.log(value);
-			let content = $("textarea[name='"+value+"']").val();
-			console.log(content);
-			
-			$.ajax({
-				url : "${pageContext.request.contextPath}/modifyProc.co?comment_no="+value+"&comment_content=" + content
-				,type : "post"
-				,data : data
-			}).done(function(rs){
-				getCommentList();
-			}).fail(function(e){
-				console.log(e);
-			}); 
-			
-		})
+         let data =  $("#modiCmtForm").serialize();
+         let value = $(this).val();
+         console.log(value);
+         let content = $("textarea[name='"+value+"']").val();
+         console.log(content);
+         
+         $.ajax({
+            url : "${pageContext.request.contextPath}/modifyProc.co?comment_no="+value+"&comment_content=" + content
+            ,type : "post"
+            ,data : data
+         }).done(function(rs){
+            getCommentList();
+         }).fail(function(e){
+            console.log(e);
+         }); 
+         
+      })
 		//뒤로가기버튼 클릭 시 다시 댓글조회해서 초기화시킴
 		$(document).on('click', '#btnReBack', function(){
 			$.ajax({
@@ -743,50 +796,57 @@
 				console.log(data);
 				$(".cmt-showBox").empty();
 				for(let cmt_dto of data){
-					let comment = "<div class='row mb-2 mx-1 my-3'>"
-						+ "<div class='col-6'>"
-						+ "<div id='comment_content' name='comment_content'>" + cmt_dto.content + "</div>"
-						+ "<button tpye='button' id = 'cmtReport' value='" + cmt_dto.comment_no + "' class='btn btn-danger btn-sm cmtReport'>신고</button>"
-						+ "</div>"
-						+ "<div class='col-3'>"
-						+ cmt_dto.user_nickname +  "|" +cmt_dto.createdDate
-						+ "</div>"
-						+ "<div class='col-2 btnBox'>"
-						+ "</div>"
-						+ "</div>"
-						+"<form method='post' id='modiCmtForm'>"
-						+ "<div class='modiBox' name = 'modiBox' value='" + cmt_dto.comment_no + "' hidden>"
-						+"<div class='row mx-2 mb-2 mt-2'>"
-						+"<div class='col'>"
-            			+"<label>댓글수정</label>"
-                		+"</div>"
-                		+"<div class='row mx-2  comment-body'>"
-						+"<div class='col-10 comment-input'>"
-						+"<textarea id='modi_content_cmt' class='modi_content_cmt' name='modi_comment_content' onkeydown='resize(this)' onkeyup='resize(this)'>"+cmt_dto.content +"</textarea>"
-						+"</div>"
-						+"<div class='col-2 comment-input'>"
-						+"<button type='button' id='btnReGo'  value='" + cmt_dto.comment_no + "' class='btn btn-dark btnReGo'>Edit</button>"
-						+"</div>"
-						+"</div>"
-						+ "</div>"
-						+"</form>"
-						$(".cmt-showBox").append(comment);
+							let comment = 
+							"<div class='row mb-2 mx-1 my-3'>"
+							+ "<div class='col-6 tempBox'>"
+							+ "<div id='comment_content' name='comment_content'>" + cmt_dto.content + "</div>"
+							
+							+ "</div>"
+							+ "<div class='col-3'>"
+							+ cmt_dto.user_nickname +  "|" +cmt_dto.createdDate
+							+ "</div>"
+							+ "<div class='col-2 btnBox'>"
+							+ "</div>"
+							+ "</div>"
+							+"<form method='post' id='modiCmtForm'>"
+							+ "<div class='modiBox' value='" + cmt_dto.comment_no + "' hidden>"
+							+"<div class='row mx-2 mb-2 mt-2'>"
+							+"<div class='col'>"
+                			+"<label>댓글수정</label>"
+	                		+"</div>"
+	                		+"<div class='row mx-2  comment-body'>"
+							+"<div class='col-10 comment-input'>"
+							+"<textarea id='modi_content_cmt' class='modi_content_cmt' name='" +cmt_dto.comment_no+ "' onkeydown='resize(this)' onkeyup='resize(this)'>"+cmt_dto.content +"</textarea>"
+							+"</div>"
+							+"<div class='col-2 comment-input'>"
+							+"<button type='button' id='btnReGo'  value='" + cmt_dto.comment_no + "' class='btn btn-dark btnReGo'>등록</button>"
+							+"</div>"
+							+"</div>"
+							+ "</div>"
+							+"</form>"
+							
+							$(".cmt-showBox").append(comment);
 						
-						
-							let btns=""
+							
 							
 							if("${loginSession.get('user_id')}" ==  cmt_dto.user_id){
 									let btns="<div class='col-3' class='reBtnBox' id='beforeReBtnBox'>"
-									+" <button type='button' id='btnReModify' value='" +cmt_dto.comment_no + "' class='btn btn-dark btn-sm btnReModify'>Edit</button>"
-									+ "<button type='button' id='btnReDelete' value='" + cmt_dto.comment_no + "' class='btn btn-dark btn-sm'>Delete</button>"
+									+" <button type='button' id='btnReModify' value='" +cmt_dto.comment_no + "' class='btn btn-dark btn-sm btnReModify'>수정</button>"
+									+ "<button type='button' id='btnReDelete' value='" + cmt_dto.comment_no + "' class='btn btn-dark btn-sm'>삭제</button>"
 									+"</div>"
 									+"<div class='col-3' class='reBtnBox' id='afterReBtnBox'>"
-									+"<button type='button' id='btnReBack' class='btn btn-dark btn-sm'>Cancel</button>"
+									+"<button type='button' id='btnReBack' class='btn btn-dark btn-sm'>취소</button>"
 									+"</div>"
 									
 									$(".btnBox:last").append(btns);
-								}else{ let btns=""}
-							
+								}
+							//자기게시글에는 신고X
+							 if("${loginSession.get('user_id')}" != cmt_dto.user_id){
+								
+								let report =  "<button tpye='button' id = 'cmtReport' value='" + cmt_dto.comment_no + "' class='btn btn-danger btn-sm cmtReport'>신고</button>"
+								
+								$(".tempBox:last").append(report)
+							}
 							}
 						
 			}).fail(function(e){

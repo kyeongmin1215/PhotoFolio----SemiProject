@@ -63,7 +63,7 @@ div {
 }
 /* 신고하기 버튼 */
 #btnReport {
-	width: 100%;
+	width: 100px;
 	height: 40px;
 	background-color: red;
 	color: white;
@@ -72,7 +72,7 @@ div {
 }
 /* 팝업창 닫기 버튼 */
 #btnCancel {
-	width: 100%;
+	width: 100px;
 	height: 40px;
 	background-color: gray;
 	color: white;
@@ -148,10 +148,10 @@ div {
 
 		<!-- 신고버튼 -->
 		<div class="row">
-			<div class="col-2 d-flex justify-content-start mt-3">
+			<div class="col-6 d-flex justify-content-end mt-3">
 				<button type="button" id="btnReport">신고하기</button>
 			</div>
-			<div class="col-2 d-flex justify-content-start mt-3">
+			<div class="col-6 d-flex justify-content-start mt-3">
 				<button type="button" id="btnCancel">닫기</button>
 			</div>
 		</div>

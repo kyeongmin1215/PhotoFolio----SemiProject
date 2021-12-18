@@ -7,6 +7,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Insert title here</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
     <style>
         * {
             box-sizing: border-box;
@@ -67,6 +70,7 @@
             left: 9.375rem;
             /*150px*/
             cursor: pointer;
+            font-family: 'Jua', sans-serif;
         }
 
         /*검색창영역 CSS*/

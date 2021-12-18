@@ -32,20 +32,18 @@ import net.nurigo.java_sdk.exceptions.CoolsmsException;
 
 public class MemberService {
 	
-	// 문자 전송 API 
 	public void sendSMS(String phoneNumber, String ranNum) {
 		String api_key = "NCSN8PGSQJJ0MLE4";
 		String api_secret = "FVNEN7DQJ8DYCG34PBWTCZX5JWGLKTSP";
 		Message coolsms = new Message(api_key, api_secret);
 
-		// 4 params(to, from, type, text) are mandatory. must be filled
 		HashMap<String, String> params = new HashMap<String, String>();
-		params.put("to", phoneNumber); // 수신전화번호
-		params.put("from", "01030257932"); // 발신전화번호
+		params.put("to", phoneNumber); 
+		params.put("from", "01030257932"); 
 
 		params.put("type", "SMS");
-		params.put("text", "인증번호는" + "[" + ranNum + "]" + "입니다."); // 문자 내용 입력
-		params.put("app_version", "test app 1.2"); // application name and version
+		params.put("text", "인증번호는" + "[" + ranNum + "]" + "입니다."); 
+		params.put("app_version", "test app 1.2"); 
 
 		try {
 			JSONObject obj = (JSONObject) coolsms.send(params);
@@ -56,7 +54,6 @@ public class MemberService {
 		}
 	}
 	
-	// 이메일 전송 SMTP
 	public void sendEmail(String email, String ranNum) {
 		Properties prop = System.getProperties();
 		prop.put("mail.smtp.starttls.enable", "true");
@@ -70,25 +67,16 @@ public class MemberService {
 		MimeMessage msg = new MimeMessage(session);
 
 		try {
-			// 보내는 날짜 지정
-//			msg.setSentDate(new Date()); 
-			// 발신자 이메일, 이름(계정은 Auth에서 받는데 why?)
 			msg.setFrom(new InternetAddress("pxxxxfxxxx@gmail.com", "admin"));
-			// 수신자 이메일
 			InternetAddress to = new InternetAddress(email);
-			// 받는 사람(문자전송 API와 import클래스명이 겹쳐서 풀네임으로 사용)
 			msg.setRecipient(javax.mail.Message.RecipientType.TO, to);
-			// 인증번호 & 임시 패스워드 전송 분기점
 			if(ranNum.length() == 4) {
-				// 제목 & 내용
 				msg.setSubject("인증번호", "UTF-8");
 				msg.setText("인증번호: " + ranNum, "UTF-8");
 			} else {
-				// 제목 & 내용
 				msg.setSubject("임시 비밀번호", "UTF-8");
 				msg.setText("임시 비밀번호: " + ranNum, "UTF-8");
 			}
-			// 최종 발송하는 class로 전달
 			Transport.send(msg);
 
 		} catch (AddressException ae) {
@@ -100,7 +88,6 @@ public class MemberService {
 		}
 	}
 	
-	// 카카오 로그인 - 토큰 생성
 	public String getToken(String code) {
 		String access_Token = "";
         String refresh_Token = "";
@@ -110,26 +97,21 @@ public class MemberService {
             URL url = new URL(reqURL);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             
-            // POST 요청을 위해 기본값이 false인 setDoOutput을 true로
             conn.setRequestMethod("POST");
             conn.setDoOutput(true);
             
-            // POST 요청에 필요로 요구하는 파라미터 스트림을 통해 전송
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
             StringBuilder sb = new StringBuilder();
-//            sb.append("grant_type=authorization_code");
             sb.append("grant_type=authorization_code");
             sb.append("&client_id=1aa69c59652259654fc77887234bfc8e");
-            sb.append("&redirect_uri=http://localhost/kakaoCallbackProc.mem");
+            sb.append("&redirect_uri=http://13.209.15.51:8080/kakaoCallbackProc.mem");
             sb.append("&code=" + code);
             bw.write(sb.toString());
             bw.flush();
             
-            // 결과 코드가 200이라면 성공
             int responseCode = conn.getResponseCode();
             System.out.println("responseCode : " + responseCode);
  
-            // 요청을 통해 얻은 JSON타입의 Response 메세지 읽어오기
             BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             String line = "";
             String result = "";
@@ -139,7 +121,6 @@ public class MemberService {
             }
             System.out.println("response body : " + result);
             
-            // Gson 라이브러리에 포함된 클래스로 JSON파싱 객체 생성
             JsonParser parser = new JsonParser();
             JsonElement element = parser.parse(result);
             
@@ -152,31 +133,25 @@ public class MemberService {
             br.close();
             bw.close();
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } 
         
         return access_Token;
 	}
 	
-	// 카카오 로그인 - 토큰으로 유저 정보 가져오기
 	public HashMap<String, Object> getUserInfo(String access_Token) {
 
-		// 요청하는 클라이언트마다 가진 정보가 다를 수 있기에 HashMap타입으로 선언(그냥 String넣어도 될 듯)
 		HashMap<String, Object> userInfo = new HashMap<>();
 		String reqURL = "https://kapi.kakao.com/v2/user/me";
 		try {
 			URL url = new URL(reqURL);
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setRequestMethod("POST");
-
-			// 요청에 필요한 Header에 포함될 내용
 			conn.setRequestProperty("Authorization", "Bearer " + access_Token);
-
 			int responseCode = conn.getResponseCode();
 			System.out.println("responseCode : " + responseCode);
 
-			BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
 
 			String line = "";
 			String result = "";
@@ -196,7 +171,7 @@ public class MemberService {
 			String id = element.getAsJsonObject().get("id").getAsString();
 			String nickname = properties.getAsJsonObject().get("nickname").getAsString();
 			String profile_image_url = profile.getAsJsonObject().get("profile_image_url").getAsString();
-			String email = null; // 이메일은 선택 항목이라 값이 없을 경우를 대비
+			String email = null; 
 			if(kakao_account.getAsJsonObject().get("email") != null) {
 				email = kakao_account.getAsJsonObject().get("email").getAsString();
 			}
@@ -211,7 +186,6 @@ public class MemberService {
 		return userInfo;
 	}
 	
-	// 카카오 로그아웃
 	public void kakaoLogout(String access_Token) {
 	    String reqURL = "https://kapi.kakao.com/v1/user/logout";
 	    try {

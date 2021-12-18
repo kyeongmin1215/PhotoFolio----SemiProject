@@ -47,13 +47,13 @@ margin-left:40px;
 				<h2>비밀번호 변경</h2>
 				<div class="row p-2">
 					<div class="col-10 mb-4">
-						<input type="password" id="password1" name="user_pw" class="form-control" placeholder="8~16자, 대소수특 각 1개 이상">
+						<input type="password" id="password1" name="user_pw" class="form-control" placeholder="8~16자 이내, 대소문자, 특수문자, 숫자 각 1개 이상">
 					</div>
 					<span class="txtRegex" id="txtRegex_pw"></span>
 				</div>
 				<div class="row p-2">
 					<div class="col-10 mb-4">
-						<input type="password" id="password2" name="pwcheck" class="form-control" placeholder="8~16자, 대소수특 각 1개 이상">
+						<input type="password" id="password2" name="pwcheck" class="form-control" placeholder="8~16자 이내, 대소문자, 특수문자, 숫자 각 1개 이상">
 					</div>
 					<span class="txtRegex" id="txtRegex_pw2"></span>
 				</div>

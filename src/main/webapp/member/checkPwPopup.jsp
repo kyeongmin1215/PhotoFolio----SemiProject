@@ -7,7 +7,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Insert title here</title>
+<title>비밀번호 변경</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 <style>
 *{box-sizing: border-box;
@@ -49,12 +49,12 @@ margin-left:40px;
 				<h2>비밀번호 확인</h2>
 				<div class="row p-2">
 					<div class="col-10 mb-4">
-						<input type="password" id="password1" name="user_pw" class="form-control" placeholder="비밀번호 입력">
+						<input type="password" id="password1" name="user_pw" class="form-control" placeholder="기존 비밀번호 입력">
 					</div>
 				</div>
 				<div class="row p-2">
 					<div class="col-10 mb-4">
-						<input type="password" id="password2" name="pwcheck" class="form-control" placeholder="비밀번호확인 입력">
+						<input type="password" id="password2" name="pwcheck" class="form-control" placeholder="기존 비밀번호확인 입력">
 					</div>
 					<span class="txtRegex" id="txtRegex_pw"></span>
 				</div>

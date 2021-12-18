@@ -32,7 +32,7 @@ public class ReportDAO {
 	}
 
 	// 신고 추가
-	public int insert(ReportDTO dto) {
+	public int insert(ReportDTO dto) throws Exception {
 		String sql = "insert into tbl_report values(seq_report.nextval, ?, ?, ?, ?, ?, ?, sysdate)";
 
 		try (Connection con = this.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql);) {
@@ -48,15 +48,13 @@ public class ReportDAO {
 			if (rs != -1)
 				return rs;
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		} 
 		return -1;
 
 	}
 
 	// 신고 조회(게시글 번호로 조회)
-	public ReportDTO selectBySeq(int post_no) {
+	public ReportDTO selectBySeq(int post_no) throws Exception {
 		String sql = "select * from tbl_report where reported_post_no=?";
 		try (Connection con = this.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql);) {
 
@@ -75,14 +73,12 @@ public class ReportDAO {
 				return new ReportDTO(report_no, report_type, report_writer, report_content, reported_post_no,
 						reported_comment_no, report_content_no, report_date);
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		} 
 		return null;
 	}
 
 	// 신고 리스트 report_type 으로 번호로 조회
-	public ArrayList<ReportDTO> selectByType(int type) {
+	public ArrayList<ReportDTO> selectByType(int type) throws Exception{
 		String sql = "select * from tbl_report where report_type=?";
 		try (Connection con = this.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql);) {
 
@@ -103,9 +99,7 @@ public class ReportDAO {
 						reported_comment_no, report_content_no, report_date));
 			}
 			return list;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
+		} 
+		
 	}
 }

@@ -69,6 +69,7 @@ public class CommentController extends HttpServlet {
 					System.out.println("댓글 알림 생성 실패");
 				}
 			} catch (Exception e) {
+				response.sendRedirect("/error.jsp");
 				e.printStackTrace();
 			}
 			
@@ -77,20 +78,24 @@ public class CommentController extends HttpServlet {
 			System.out.println("post_no : " + post_no);
 			System.out.println("content : " + content);
 
+			try {
 			int rs = dao.insert(new CommentDTO(0, post_no, user_id, content, null));
 			if (rs == 1) {
 				response.getWriter().write("success");
 			} else {
 				response.getWriter().write("fail");
 			}
-			
+			}catch(Exception e) {
+				response.sendRedirect("/error.jsp");
+				e.printStackTrace();
+			}
 		// 댓글 리스트 출력(aJax)
 		} else if (cmd.equals("/getCommentProc.co")) {
 			System.out.println("요청 도착");
 			int post_no = Integer.parseInt(request.getParameter("post_no"));
 			System.out.println("post_no : " + post_no);
 			
-			
+			try {
 			ArrayList<CommentPlusDTO> list = dao.getCommentList(post_no);
 		
 			Gson gson = new Gson();
@@ -101,11 +106,15 @@ public class CommentController extends HttpServlet {
 			}else {
 				response.getWriter().write("fail");
 			}
-				
+			}catch(Exception e) {
+				response.sendRedirect("/error.jsp");
+				e.printStackTrace();
+			}
 		}else if(cmd.equals("/deleteProc.co")) {
 			int comment_no = (Integer.parseInt(request.getParameter("comment_no")));
 			System.out.println("댓글번호 : " + comment_no);
 			
+			try {
 			int rs = dao.deleteBySeq(comment_no);
 			
 			if(rs != -1) {
@@ -113,18 +122,27 @@ public class CommentController extends HttpServlet {
 			}else {
 				response.getWriter().write("fail");
 			}
+			}catch(Exception e) {
+				response.sendRedirect("/error.jsp");
+				e.printStackTrace();
+			}
 		}else if(cmd.equals("/modifyProc.co")) {
 			int comment_no = (Integer.parseInt(request.getParameter("comment_no")));
 			System.out.println("수정 댓글번호 : " + comment_no);
 			String comment_content = request.getParameter("comment_content");
 			System.out.println("수정 내용 : " + comment_content);
 			
+			try {
 			int rs = dao.modify(comment_no, comment_content);
 			
 			if(rs != -1) {
 				response.getWriter().write("success");
 			}else {
 				response.getWriter().write("fail");
+			}
+			}catch(Exception e) {
+				response.sendRedirect("/error.jsp");
+				e.printStackTrace();
 			}
 		}
 			

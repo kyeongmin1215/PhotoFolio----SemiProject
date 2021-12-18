@@ -5,7 +5,10 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>Photofolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
 <style>
  *{box-sizing: border-box;
             margin:0;}
@@ -46,6 +49,7 @@
             position: absolute;
             color:white;
             font-size: xX-large;
+            font-family: 'Jua', sans-serif;
             font-style: italic;
             font-weight: bold;
             text-shadow: 6px 2px 2px gray;
@@ -219,8 +223,8 @@
             top:4.688rem; /*75px*/
             left:73.938rem; /*1183*/
             display: none;
-            background-color:white;
-            border:1px solid black;
+            background-color:#d9d9f2;
+            
         }
         /*업로드영역*/
         #uploadBox{
@@ -422,6 +426,9 @@
 .noti_table {
     width: 100%;
 }
+.noti_table>tr>td{
+	padding-right:10px;
+}
 .noti_userImg_wrapper {
     width: 70px;
 }
@@ -469,7 +476,7 @@
             <div id="inputBox">
                 <div class="search-wrapper">
                     <div class="input-holder">
-                        <input onkeyup="enterkey();" type="text" id="search-input" class="search-input" placeholder="Type to search" style="color: black;" />
+                        <input onkeyup="enterkey();" type="text" id="search-input" class="search-input" placeholder="찾으실 아이디, 제목, 내용을 입력해주세요." style="color: black;" />
                         <!-- <input type="text" class="search-input" placeholder="Type to search" style="color: black;"/> -->
                         <button class="search-icon" onclick="searchToggle(this, event);"><span></span></button>
                     </div>
@@ -511,14 +518,7 @@
 	            <!--로그인 후의 프로필영역(프로필클릭시 메뉴단 내려옴)-->
 			        <div id="profileBox">
 			            <div id="profilePhoto">
-			            <c:choose>
-			            	<c:when test="${!empty loginSession.get('access_token') }">
-			            		<img src="${loginSession.get('profilePhoto_path') }">
-			           		 </c:when>
-			           		 <c:otherwise>
-			            		<img src="/upload/${loginSession.get('profilePhoto_path') }">
-			            	 </c:otherwise>  
-			            </c:choose>  
+			           		 <!-- ajax로 사진받아옴 -->
 			            </div>
 			            <div id=profileMenu>
 			                <ul>
@@ -640,6 +640,7 @@
 			        $(document).ready(function() {
 			    getNoti(); // 로드되면 1회 실행
 			    setInterval(getNoti, 3000); // 3초마다 재실행
+			    getProfile();
 			});
 			      
 			   let notiShare = "";
@@ -653,15 +654,9 @@
 			        if(!(rs == "fail")) {
 			        	 $(".noti_table").empty(); // 기존 리스트 제거
 			            for (let noti of rs) {
-	                        let image = "";
-	                        if (noti.user_type == 3) { // kakao user
-	                            image = '<img id="noti_userImg" src="' + noti.profilephoto_path + '">';
-	                        } else {
-	                            image = '<img id="noti_userImg" src="/upload/' + noti.profilephoto_path + '">';
-	                        }
-	                        let notiList = '<tr>'
+	                     	let notiList = '<tr>'
 	                            + '<td class="noti_userImg_wrapper">'
-	                            + image
+	                            + '<img id="noti_userImg" src="' + noti.profilephoto_path + '">'
 	                            + '</td>'
 	                            + '<td class="noti_msg">'
 	                            + '<span>' + noti.notiDto.noti_msg + '</span><br>'
@@ -700,6 +695,31 @@
 			        console.log(e);
 			    });
 			});
+			
+			//프로필 ajax로 출력
+			function getProfile() {
+			    $.ajax({
+			        type: "get",
+			        url: "${pageContext.request.contextPath}/selectPhoto.mem",
+			        dataType: "json"
+			    }).done(function(rs) {
+			        if(!(rs == "fail")) {
+			        	 let photo = rs
+			        	 console.log(photo);
+			            
+	                     	let profilePhoto = '<img src="' + photo + '">'
+	                        
+	                        $("#profilePhoto").append(profilePhoto); 
+			                
+			            
+			        } else {
+			            console.log("수신 실패");
+			        }
+			    }).fail(function(e) {
+			        console.log(e);
+			    });
+			}
+			
     </script>
 </body>
 </html>

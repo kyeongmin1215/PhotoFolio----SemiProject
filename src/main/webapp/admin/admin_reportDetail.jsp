@@ -29,9 +29,16 @@
             margin: 0 auto;
             text-align: center;
         }
-
+	   .titleBox{
+	   		width: 710px;
+	   		margin-left:18px;
+	   }
         h2 {
             font-size: 30px;
+            background-color:rgb(86, 86, 196);
+            border-radius: 10px;
+            color:white;
+            padding-top:10px;
         }
 
         #title {
@@ -42,6 +49,7 @@
         .table_ {
             width: 90%;
             margin-left: 20px;
+         
         }
 
         .title {
@@ -49,7 +57,7 @@
         }
 
         td, th {
-            border: 2px solid black;
+            border: 1px solid lightgray;
             height: 40px;
             text-align : center;
         }
@@ -78,7 +86,7 @@
             text-align: left;
             vertical-align: top;
             width: 80%;
-            border: 2px solid black;
+            border: 1px solid lightgray;
         }
 
         /*         .post_content_titleArea {
@@ -90,7 +98,7 @@
             margin-right: 24px;
             width: 650px;
             height: 270px;
-            border: 2px solid black;
+            border: 1px solid lightgray;
         }
 
         .post_content_bigTitle {
@@ -134,7 +142,7 @@
         <div id="header"></div>
         <div id="여기부터 쓰시면 됩니다.">
             <div class="wrapper">
-                <div class="row" id="title">
+                <div class="row titleBox" id="title">
                     <h2>신고 상세 조회</h2>
                 </div>
                 <div class="table_">

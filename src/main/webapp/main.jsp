@@ -6,9 +6,15 @@
 <html>
 <head profile="http://www.w3.org/2005/10/profile">
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>Photofolio</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 <link rel="icon" type="image/png" href="http://example.com/myicon.png"> 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Quattrocento+Sans:wght@700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
 <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/3.1.8/imagesloaded.pkgd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/masonry/3.3.1/masonry.pkgd.min.js"></script>
@@ -32,9 +38,10 @@
 .Main{
     position: relative;
     width:100rem; /*1600px*/
-    background-color: aliceblue;
+    background-color: #ececf8;
     height: auto;
     left:9.375rem; /*150px*/
+    border-radius: 10px;
 }
         /*캐러셀 안의 사진*/
 .card-img>img{
@@ -54,6 +61,10 @@
     font-size: large;
     padding-top: 0.938rem; /*15px*/
     font-weight: 900;
+    font-family: 'Jua', sans-serif;
+}
+.text1{
+	font-family: 'Quattrocento Sans', sans-serif;
 }
         
 @media (max-width: 767px) {
@@ -93,9 +104,10 @@
  .Main2{
     position: relative;
     width:100rem; /*1600px*/
-    background-color: aliceblue;
+    background-color: #ececf8;
     height: auto;
     left:9.375rem; /*150px*/
+    border-radius:10px;
 }
 /*게시글1개 전체부분*/
 .item {
@@ -124,14 +136,19 @@
 .infoBox_header{
     height: 30%;
     margin-left: 0.625rem; /*10px*/
+    
 }
 .infoBox_header>a{
 	text-decoration: none;
 }
 .infoBox_header>a>p{
     font-size: x-large;
+    font-family: 'Jua', sans-serif;
     padding-top: 0.625rem; /*10px*/
     color:black;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 /*프로필사진+아이디부분*/
 .infoBox_main{
@@ -153,6 +170,7 @@
 }
 #infoBox_main_nickname>a>p{
     font-size: medium;
+    font-family: 'Jua', sans-serif;
     padding-left: 1.25rem; /*20px*/
     padding-top: 0.938rem; /*15px*/
     color:black;
@@ -180,6 +198,7 @@
 #footer_logo{
     position:absolute;
     font-size:50px;
+    font-family: 'Jua', sans-serif;
     color:white;
     font-style: italic;
     font-weight: bold;
@@ -192,17 +211,21 @@
     font-size: large;
     color: white;
     left:43.75rem; /*700px*/
+    font-family: 'Jua', sans-serif;
     top:1.25rem; /*20px*/
     font-weight: 800;
 }
 #footer_Info>span{
+	font-family: 'Jua', sans-serif;
     font-style: italic;
     font-weight: bold;
     text-shadow: 6px 2px 2px gray;
 }
 #footer_Info2{
+	position:absolute;
     font-size: large;
     color: white;
+    font-family: 'Jua', sans-serif;
     left:50rem; /*600px*/
     top:3.75rem; /*60px*/
     font-weight: 800;
@@ -220,7 +243,7 @@
 		 <!--캐러셀-->
             <div class="container text-center my-3">
                 <!--위쪽 제목 -->
-                <h1 class="font-weight-light">Category of Photofolio</h1>
+                <h1 class="font-weight-light text1">Category of Photofolio</h1>
                 <div class="row mx-auto my-auto justify-content-center">
                     <div id="recipeCarousel" class="carousel slide" data-bs-ride="carousel">
                         <div class="carousel-inner" role="listbox">	
@@ -332,8 +355,8 @@
                         </a>
                     </div>
                 </div>
-                <h5 class="mt-2 fw-light">The best and most beautiful things in the world cannot be seen or even touched-they must be felt with the heart.</h5>
-                <h5 class="mt-2 fw-ligth">-Helen Keller</h5>
+                <h5 class="mt-2 fw-light text1">The best and most beautiful things in the world cannot be seen or even touched-they must be felt with the heart.</h5>
+                <h5 class="mt-2 fw-ligth text1">-Helen Keller</h5>
             </div>
       	</div><!-- 메인끝 -->
    
@@ -366,15 +389,11 @@
 	                           <!--유저프로필사진-->
 	                           <div id="infoBox_main_profile">
 	                           		<a href = "${pageContext.request.contextPath}/indToUser.bo?currentPage=1&user_id=${list.getPost_writer()}">
-
-	                           			<c:choose>
-	                           				<c:when test="${list.getUser_type() == 3}">	                           					
-	                           					<img src="${pageContext.request.contextPath}${list.getProfilephoto_path()}" id="info_profilePhoto">
-	                           				</c:when>
-	                           				<c:otherwise>
-	                           				 <img src="${pageContext.request.contextPath}/upload/${list.getProfilephoto_path()}" id="info_profilePhoto">
-	                           				</c:otherwise>							   
-									   	 </c:choose>
+	                           		
+	                           			
+	                           				 <img src="${pageContext.request.contextPath}${list.getProfilephoto_path()}" id="info_profilePhoto">
+	                           
+			
 									</a>         	           
 	                           </div>
 	                           <!--유저아이디-->
@@ -417,7 +436,7 @@
 
            </div> <!-- 메인2영역끝 -->    
       	</div><!-- 메인2끝 --> 	
-      	<div class="Footer">
+      	<div class="Footer mt-3">
       		<p id="footer_logo">PhotoFolio</p>
             <p id="footer_Info">T 02- 0000- 0000  &nbsp;|&nbsp;  A 서울 강남구 테헤란로 14길 6  &nbsp;|&nbsp;  Copyright 2021 ©<span>Photofolio</span>. All right reserved. </p>
             <p id="footer_Info2">포토폴리오 운영팀:help@photofolio.com | <a>이용약관</a> | <a><b>개인정보처리방침</b></a></p>

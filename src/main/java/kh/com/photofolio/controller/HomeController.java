@@ -52,11 +52,6 @@ public class HomeController extends HttpServlet {
 				System.out.println(user_type);
 				RequestDispatcher rd = request.getRequestDispatcher("/toMain.admHome");
 				request.setAttribute("user_type",user_type); rd.forward(request, response);	
-			}else if(user_type.equals("3")){
-				RequestDispatcher rd = request.getRequestDispatcher("/toHome.home"); 
-				request.setAttribute("user_type",user_type); 
-				rd.forward(request, response);
-				
 			}
 	     }else {
 	    	 System.out.println("loginSession 값이 없습니다. 메인으로 이동합니다.");

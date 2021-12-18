@@ -47,7 +47,7 @@ public class Admin_reportDAO {
 				+ "REPORT_NO, REPORT_TYPE, POST_TITLE, C.REPORT_CONTENT, REPORT_DATE \r\n" + "FROM TBL_REPORT A\r\n"
 				+ "INNER JOIN TBL_POST B ON (A.REPORTED_POST_NO =  B.POST_NO)\r\n"
 				+ "INNER JOIN TBL_REPORT_CONTENT C USING (REPORT_CONTENT_NO)\r\n"
-				+ "ORDER BY REPORT_DATE ) where 순위 between ? and ?";
+				+ "ORDER BY REPORT_DATE DESC ) where 순위 between ? and ?";
 		try (Connection con = this.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql);) {
 			pstmt.setInt(1, startRange);
 			pstmt.setInt(2, endRange);

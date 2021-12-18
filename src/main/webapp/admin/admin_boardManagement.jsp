@@ -315,7 +315,7 @@
                                                 <c:if test="${naviMap.get('needPrev') eq true}">
                                                     <li class="page-item">
                                                         <a class="page-link"
-                                                            href="/searchProc.admBoo?currentPage=${naviMap.get('startNavi')-1}&search_category=${search_category}&search_input=${value}"
+                                                            href="/searchProc.admBo?currentPage=${naviMap.get('startNavi')-1}&search_category=${search_category}&search_input=${value}"
                                                             aria-label="Previous">
                                                             <span aria-hidden="true">&laquo;</span>
                                                         </a>

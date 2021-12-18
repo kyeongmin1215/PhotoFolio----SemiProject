@@ -15,11 +15,16 @@
 <title>게시글 등록</title>
 <script type="text/javascript">
         $(document).ready(function(){
-            $("#header").load("resources/header/header.jsp")      
+            $("#header").load("resources/header/header.jsp");
+            
          });
        </script>
 <style>
  
+ .Wrapper{
+ 	background-color:#ececf8;
+ 	
+ }
 
 /* ========== 게시글 추가 ========== */
 /* 게시글 전체 컨테이너 */
@@ -28,10 +33,9 @@
     width: 1600px;
     border: 1px solid lightgray;
     border-radius: 5px;
+    background-color:white;
 }
-div{
-    /* border: 1px solid lightblue; */
-}
+
 /* 전체 row(튜플,행) */
 .row {
     margin-top: 10px;
@@ -47,6 +51,7 @@ div{
     height: 50px;
     width: 100px;
     font-size: 15px;
+    
 }
 /* 카테고리 선택 버튼:hover */
 .btnCategory:hover {
@@ -58,6 +63,7 @@ div{
     height: 50px;
     width: 100px;
     font-size: 15px;
+    
 }
 #post_title {
     width: 98%;
@@ -82,6 +88,7 @@ div{
     height: 50px;
     width: 100px;
     font-size: 20px;
+   
 }
 /* 취소 버튼 */
 #btnCancel {
@@ -105,27 +112,7 @@ div{
     width: 100px;
     font-size: 15px;
     }
-/* =============== 푸터 =============== */
 
-.Footer{
-    position: relative;
-    width:118.75rem; /*1900px*/
-    height:6.25rem; /*100px*/
-    background-color: #5656c4;
-}
-.Footer>p{
-    position:absolute;
-    font-size: large;
-    color: white;
-    left:34.375rem; /*550px*/
-    top:1.875rem; /*30px*/
-    font-weight: 800;
-}
-.Footer>p>span{
-    font-style: italic;
-    font-weight: bold;
-    text-shadow: 6px 2px 2px gray;
-}
 </style>
 
 </head>
@@ -173,7 +160,7 @@ div{
                     <div><h5>제목</h5></div>
                 </div>
                 <div class="col-11 d-flex justify-content-start">
-                    <input type="text" id="post_title" name="post_title" class="form-control" placeholder="제목을 입력 해주세요">
+                    <input type="text" id="post_title" name="post_title" class="form-control" maxlength="40" placeholder="제목을 입력 해주세요">
                 </div>
             </div>
 
@@ -182,7 +169,7 @@ div{
                     <div><h5>글쓴이</h5></div>
                 </div>
                 <div class="col-1 d-flex justify-content-start">
-                    <div id="post_writer_nickname" name="post_writer_nickname">${loginSession.get('user_nickname') }</div>
+                    <div id="post_writer_nickname" name="post_writer_nickname"></div>
                 </div>
                 
             </div>
@@ -211,10 +198,10 @@ div{
             <!-- ========== 게시글 하단 ========== -->
             <div class="row">
                 <div class="col-6 d-flex justify-content-end">
-                    <button type="button" id="btnCancel">Cancel</button>
+                    <button type="button" id="btnConfirm">등록</button>
                 </div>
                 <div class="col-6 d-flex justify-content-start">
-                    <button type="button" id="btnConfirm">Confirm</button>
+                    <button type="button" id="btnCancel">취소</button>
                 </div>
             </div>
             </form>
@@ -278,6 +265,10 @@ div{
          let photo_path = document.getElementById("formFile");
        let post_title = document.getElementById("post_title")
        let post_content = document.getElementById("post_content");
+       
+       let fileType = /(.*?)\.(jpg|jpeg|png|gif|bmp|pdf)$/;
+       let imgFile = $('#formFile').val();
+
          
          if(post_title.value == "") {
              alert("제목을 입력 해주세요.");
@@ -285,7 +276,10 @@ div{
          } else if (photo_path.value == "") {
              alert("사진을 등록 해주세요.");
              return;
-         } else if (post_content.value == "") {
+         }else if (!imgFile.match(fileType)) {
+             alert("이미지 확장자를 확인 해주세요");
+             return;
+         }else if (post_content.value == "") {
              alert("내용을 입력 해주세요.");
              return;
          }else if(category_no.value == ""){
@@ -300,9 +294,61 @@ div{
          location.href = "${pageContext.request.contextPath}/toUserPage.bo?currentPage=1";
      });
 
-       
+     $(document).ready(function() {
+		    getNickname();
+		});
+     
+   //닉네임 ajax로 출력
+		function getNickname() {
+		    $.ajax({
+		        type: "get",
+		        url: "${pageContext.request.contextPath}/selectNN.mem",
+		        dataType: "json"
+		    }).done(function(rs) {
+		        if(!(rs == "fail")) {
+		        	 let nickname = rs
+		        	 console.log(nickname);
+         
+                     $("#post_writer_nickname").append(nickname); 
+		                
+		            
+		        } else {
+		            console.log("수신 실패");
+		        }
+		    }).fail(function(e) {
+		        console.log(e);
+		    });
+		}
 
-       
+		// 이미지 미리보기 할때 사진 변환
+	    function readInputFile(e){
+	        let sel_files = [];
+	        
+	        sel_files = [];
+	        $('#preview').empty();
+	        
+	        let files = e.target.files;
+	        let fileArr = Array.prototype.slice.call(files);
+	        let index = 0;
+	        
+	        fileArr.forEach(function(f){
+	           if(!f.type.match("image/*")){
+	               alert("이미지 확장자만 업로드 가능합니다.");
+	                return;
+	            };
+	            if(files.length < 2){
+	               sel_files.push(f);
+	                let reader = new FileReader();
+	                reader.onload = function(e){
+	                   let html = `<a id=img_id_${index}><img src=${e.target.result} data-file=${f.name} /></a>`;
+	                    $('previewreview').append(html);
+	                    index++;
+	                };
+	                reader.readAsDataURL(f);
+	            }
+	        })
+	    }
+	    $('#formFile').on('change',readInputFile);
     </script>
 </body>
 </html>

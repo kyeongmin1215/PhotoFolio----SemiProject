@@ -14,6 +14,9 @@
         integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
         <title>login</title>
     <style>
+        body{
+            background-color:rgb(86, 86, 196);
+        }
         /*container*/
         .container {
             max-width: 680px;
@@ -75,8 +78,7 @@
         #sendNum_Wrapper2,
         #btnModalCall,
         #btnModalCall2,
-        #secondWrap,
-        #radioArea2 {
+        #secondWrap {
             display: none;
         }
         /*인증 관련 버튼들*/
@@ -259,7 +261,7 @@
                         <div class="row my-4">
                             <div class="col-md-12 mb-3 py-2">
                                 <input type="text" class="form-control" id="inputId" name="user_id"
-                                    placeholder="PhotoFolio 아이디" maxlength="10">
+                                    placeholder="PhotoFolio 아이디" maxlength="9">
                             </div>
                             <div class="col-md-12 mb-3 d-flex justify-content-center">
                                 <button class="btn btn-primary clsBtn" type="button" id="idCheck">다음</button>
@@ -268,59 +270,6 @@
                     </div>
                     <!--비밀번호 찾기 - 휴대전화-->
                     <div class="pwFindWrapper" id="secondWrap">
-                        <div class="row">
-                            <div class="col">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="exampleRadios"
-                                        id="exampleRadios3" value="option3" checked>
-                                    <label class="form-check-label" for="exampleRadios1">
-                                        휴대전화로 찾기
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <!--비밀번호 찾기 - 휴대전화 입력-->
-                        <div class="row" id="radioArea1">
-                            <div class="col-12">
-                                <p>회원정보에 등록된 휴대전화와 입력한 휴대전화 번호가 같아야, 새 비밀번호를 받을 수 있습니다.</p>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <label for="phone1">휴대전화</label>
-                                <select class="form-select" aria-label="Default select example" id="phone1"
-                                    name="phone1" required>
-                                    <option selected>010</option>
-                                    <option value="1">011</option>
-                                    <option value="2">016</option>
-                                    <option value="2">017</option>
-                                    <option value="3">018</option>
-                                </select>
-                                <span class="txtRegex" id="txtRegex_phone"></span>
-                            </div>
-                            <div class="col-md-5 mb-3">
-                                <label for="phone3">&nbsp;</label>
-                                <input type="text" class="form-control" id="phone3" name="phone3" maxlength="8">
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label for="btnSendPhone2">&nbsp;</label>
-                                <button type="button" class="btn btn-primary clsBtn" id="btnSendPhone2"
-                                    disabled>ㄴㄴ</button>
-                            </div>
-                        </div>
-                        <!--경계선-->
-                        <hr class="mb-4">
-                        <!--비밀번호 찾기 - 이메일-->
-                        <div class="row">
-                            <div class="col">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="exampleRadios"
-                                        id="exampleRadios4" value="option4">
-                                    <label class="form-check-label" for="exampleRadios2">
-                                        이메일로 찾기
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <!--비밀번호 찾기 - 이메일 입력-->
                         <div class="row" id="radioArea2">
                             <div class="col-12">
                                 <p>회원정보에 등록된 이메일과 입력한 이메일이 같아야, 새 비밀번호를 받을 수 있습니다.</p>
@@ -342,10 +291,10 @@
     </div>
 
     <!--modal 호출 버튼-->
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#findIdModal"
+    <button type="button" class="btn btn-primary clsModal" data-bs-toggle="modal" data-bs-target="#findIdModal"
         id="btnModalCall">
     </button>
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#findPwModal"
+    <button type="button" class="btn btn-primary clsModal" data-bs-toggle="modal" data-bs-target="#findPwModal"
         id="btnModalCall2">
     </button>
 
@@ -420,7 +369,7 @@
             }
         });
         // 인증번호 받기 버튼 (아이디 찾기 - 휴대전화 인증)
-        let user_id2 = ""; // 전송받은 id보관 예정
+        let user_id2 = ""; 
         document.getElementById("btnSendPhone").addEventListener("click", function () {
             $.ajax({
                 type: "post",
@@ -432,12 +381,11 @@
             }).done(function (data) {
                 if (data == "false") {
                     alert("존재하지 않는 휴대전화입니다.");
-                } else { // 회원정보에 존재하는 휴대전화면, 인증번호 발송 하기
+                } else { 
                     user_id2 = data;
                     alert("인증번호를 입력해주세요");
-                    document.getElementById("sendNum_Wrapper2").style.display = "flex"; // 숨은 입력창 띄우기
-                    sendNumberByPhone(); // 인증번호 발송
-                    // 인증번호 받기 버튼 잠금
+                    document.getElementById("sendNum_Wrapper2").style.display = "flex"; 
+                    sendNumberByPhone(); 
                     document.getElementById("btnSendPhone").disabled = "disabled";
                 }
             }).fail(function (e) {
@@ -445,7 +393,7 @@
             });
         });
         // 인증번호 발송 (아이디 찾기 - 휴대전화 인증)
-        let verification_number2 = 0; // 전송받은 인증번호 보관
+        let verification_number2 = 0; 
         function sendNumberByPhone() {
             $.ajax({
                 type: "post",
@@ -461,19 +409,19 @@
             });
         }
         // 인증번호 확인 버튼 (아이디 찾기 - 휴대전화 인증)
-        const inputNumber2 = document.getElementById("inputNumber2"); // 인증번호 입력창
+        const inputNumber2 = document.getElementById("inputNumber2"); 
         document.getElementById("btnSubmit2").addEventListener("click", function () {
             if (inputNumber2.value == verification_number2) {
-                alert("당신의 아이디는 " + user_id2 + " 입니다."); // alert말고 다른방법이 나을듯
-                document.getElementById("inputNumber2").readOnly = "true"; // 입력창 잠그기
-                document.getElementById("btnSubmit2").disabled = "disabled"; // 버튼도 잠그기
+                alert("당신의 아이디는 " + user_id2 + " 입니다."); 
+                document.getElementById("inputNumber2").readOnly = "true"; 
+                document.getElementById("btnSubmit2").disabled = "disabled"; 
                 $('#findIdModal').modal('hide');
             } else {
                 alert("인증번호를 잘못 입력하셨습니다.");
             }
         });
         // 인증번호 받기 버튼  (아이디 찾기 - 이메일 인증)
-        let user_id = ""; // 전송받은 id보관 예정
+        let user_id = ""; 
         document.getElementById("btnSendEmail").addEventListener("click", function () {
             $.ajax({
                 type: "post",
@@ -485,12 +433,10 @@
                 if (data == "false") {
                     alert("존재하지 않는 이메일입니다.");
                 } else {
-                    // 회원정보에 존재하는 이메일이면, 인증번호 발송 하기
                     user_id = data;
                     alert("인증번호를 입력해주세요");
-                    document.getElementById("sendNum_Wrapper").style.display = "flex"; // 숨은 입력창 띄우기
-                    sendNumberByEmail(); // 인증번호 발송
-                    // 인증번호 받기 버튼 잠금
+                    document.getElementById("sendNum_Wrapper").style.display = "flex"; 
+                    sendNumberByEmail(); 
                     document.getElementById("btnSendEmail").disabled = "disabled";
                 }
             }).fail(function (e) {
@@ -498,7 +444,7 @@
             });
         });
         // 인증번호 발송 (아이디 찾기 - 이메일 인증)
-        let verification_number = 0; // 전송받은 인증번호 보관
+        let verification_number = 0; 
         function sendNumberByEmail() {
             $.ajax({
                 type: "post",
@@ -513,43 +459,33 @@
             });
         }
         // 인증번호 확인 버튼 (아이디 찾기 - 이메일 인증)
-        const inputNumber = document.getElementById("inputNumber"); // 인증번호 입력창
+        const inputNumber = document.getElementById("inputNumber"); 
         document.getElementById("btnSubmit").addEventListener("click", function () {
             if (inputNumber.value == verification_number) {
-                alert("당신의 아이디는 " + user_id + " 입니다."); // alert말고 다른방법이 나을듯
-                document.getElementById("inputNumber").readOnly = "true"; // 입력창 잠그기
-                document.getElementById("btnSubmit").disabled = "disabled"; // 버튼도 잠그기
+                alert("당신의 아이디는 " + user_id + " 입니다."); 
+                document.getElementById("inputNumber").readOnly = "true"; 
+                document.getElementById("btnSubmit").disabled = "disabled"; 
                 $('#findIdModal').modal('hide');
             } else {
                 alert("인증번호를 잘못 입력하셨습니다.");
             }
         })
 
-        /*** 패스워드 찾기 modal ***/
-
-        // 라디오 버튼 스위칭 
-        document.addEventListener("click", function (e) {
-            if (e.target.id == "exampleRadios3") {
-                document.getElementById("radioArea1").style.display = "flex";
-                document.getElementById("radioArea2").style.display = "none";
-            } else if (e.target.id == "exampleRadios4") {
-                document.getElementById("radioArea1").style.display = "none";
-                document.getElementById("radioArea2").style.display = "flex";
-            }
-        });
         // 아이디 입력 후, 다음 버튼 클릭시 
         let inputId = document.getElementById("inputId");
         document.getElementById("idCheck").addEventListener("click", function () {
-            $.ajax({ // 중복검사 기능 사용
+            $.ajax({ 
                 type: "post",
                 url: "${pageContext.request.contextPath}/idCheckProc.mem",
                 data: {
                     id: inputId.value
                 }
             }).done(function (data) {
-                if (data == "true") { // true면 아이디 존재
+                if (data == "true") { 
                     document.getElementById("firstWrap").style.display = "none";
                     document.getElementById("secondWrap").style.display = "inline-block";
+                } else if(data == "kakao") {
+                    alert("카카오 회원은 해당 기능을 사용할 수 없습니다.");
                 } else {
                     alert("아이디를 제대로 입력하세요.");
                 }
@@ -557,6 +493,13 @@
                 console.log(e);
             });
         });
+
+        $(".modal").on("hidden.bs.modal", function(){
+            $("input").val("");
+            document.getElementById("firstWrap").style.display = "block";
+            document.getElementById("secondWrap").style.display = "none";
+        });
+
         // 이메일로 패스워드 발급 
         document.getElementById("btnSendEmail2").addEventListener("click", function () {
             $.ajax({
@@ -587,7 +530,6 @@
             }).done(function (data) {
                 if (data == "true") {
                     alert("패스워드를 이메일로 발송했습니다.");
-                    // location.href = "${pageContext.request.contextPath}/toLogin.mem"; // 로그인 페이지 리로드
                     $('#findPwModal').modal('hide');
                 } else {
                     alert("패스워드 발송 실패.");

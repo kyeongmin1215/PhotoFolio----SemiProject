@@ -66,10 +66,10 @@ public class BoardController extends HttpServlet {
 		// 게시글 추가 페이지로 이동
 		if (cmd.equals("/toInsertPost.bo")) {
 			HashMap<String, String> map =(HashMap)session.getAttribute("loginSession");
-	    	String id = map.get("user_id");
+	    	String NN = map.get("user_nickname");
 	    	
 	    	RequestDispatcher rd = request.getRequestDispatcher("/board/insertPost.jsp");
-			request.setAttribute("id", id);
+			request.setAttribute("NN", NN);
 			rd.forward(request, response);
 
 
@@ -84,18 +84,17 @@ public class BoardController extends HttpServlet {
 //			System.out.println("post_no : " + post_no);
 			MemberDAO mdao = new MemberDAO();
 			
+			try {
+			int totalCnt = dao.getBoardListById(id);
 			// ================================================
 			
 			BoardService service = new BoardService();
-			HashMap<String, Object> naviMap = service.getPageNavi(currentPage);
-			ArrayList<BoardDTO> list = service.getBoardList((int) naviMap.get("currentPage"));
+			HashMap<String, Object> naviMap = service.getPageNavi(currentPage, totalCnt);
+			ArrayList<BoardDTO> list = service.getBoardList((int) naviMap.get("currentPage"),id);
 			FileDAO daoFile = new FileDAO();
-			try {
 				MemberDTO mdto = mdao.selectById(id);
 				request.setAttribute("mdto", mdto);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			
 			ArrayList<FileDTO> file_list = daoFile.selectAll(id);
 			ArrayList<BoardDTO> board_list = dao.selectById(id);
 			
@@ -159,7 +158,11 @@ public class BoardController extends HttpServlet {
 				rd.forward(request, response);
 			
 			}
-			
+			}
+			catch(Exception e) {
+				response.sendRedirect("/error.jsp");
+				e.printStackTrace();
+			}
 //			if (list != null && dto != null) {
 //				RequestDispatcher rd = request.getRequestDispatcher("/board/userPage.jsp");
 //				request.setAttribute("naviMap", naviMap);
@@ -193,55 +196,61 @@ public class BoardController extends HttpServlet {
 			
 		 //인덱스에서 다른유저 프로필을 클릭했을 시에 유저페이지로 이동
 		}else if(cmd.equals("/indToUser.bo")) {
-			HashMap<String, String> map = (HashMap)session.getAttribute("loginSession");
-			System.out.println("map값 : " + map);
-			if(map == null) {
-				response.sendRedirect("/member/login.jsp");
-			}else {
-			String user_id = request.getParameter("user_id");
-			int currentPage = (Integer.parseInt(request.getParameter("currentPage")));
-			System.out.println(" 페이지값 : " + currentPage);
-			System.out.println("유저 아이디 : " + user_id);
-			
-			MemberDAO mdao = new MemberDAO();
-			BoardService service = new BoardService();
-			HashMap<String, Object> naviMap = service.getPageNavi(currentPage);
-			ArrayList<BoardDTO> list = service.getBoardList((int) naviMap.get("currentPage"));
-			try {
+			    if(session.getAttribute("loginSession") != null) {
+			    HashMap<String, String> map = (HashMap)session.getAttribute("loginSession");
+			    String id = map.get("user_id");
+				
+				try {
+					int totalCnt = dao.getBoardListById(id);
+				
+			    
+				String user_id = request.getParameter("user_id");
+				
+				int currentPage = (Integer.parseInt(request.getParameter("currentPage")));
+				System.out.println(" 페이지값 : " + currentPage);
+				System.out.println("유저 아이디 : " + user_id);
+				
+				MemberDAO mdao = new MemberDAO();
+				BoardService service = new BoardService();
+				HashMap<String, Object> naviMap = service.getPageNavi(currentPage, totalCnt);
+				ArrayList<BoardDTO> list = service.getBoardList((int) naviMap.get("currentPage"),user_id);
+				
 				MemberDTO mdto = mdao.selectById(user_id);
 				System.out.println("mdto : " + mdto);
-				request.setAttribute("mdto", mdto);
+					
+					
 				
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			FileDAO daoFile = new FileDAO();
-			ArrayList<FileDTO> file_list = daoFile.selectAll(user_id);
-			ArrayList<BoardDTO> board_list = dao.selectById(user_id);
-			
-			/********** 팔로우 관련 **********/
-			FollowDAO daoFollow = new FollowDAO();
-			try { // 팔로워, 팔로우 유저 수를 가져옴
+				FileDAO daoFile = new FileDAO();
+				ArrayList<FileDTO> file_list = daoFile.selectAll(user_id);
+				ArrayList<BoardDTO> board_list = dao.selectById(user_id);
+				
+				/********** 팔로우 관련 **********/
+				FollowDAO daoFollow = new FollowDAO();
+				
 				int countFollower = daoFollow.countFollower(user_id);
 				int countFollowing = daoFollow.countFollowing(user_id);
 				request.setAttribute("countFollower", countFollower);
 				request.setAttribute("countFollowing", countFollowing);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			
-			if (list != null) {
-				RequestDispatcher rd = request.getRequestDispatcher("/board/userPage.jsp");
-				request.setAttribute("naviMap", naviMap);
-				request.setAttribute("list", list); 
-				request.setAttribute("file_list", file_list); //사진정보+게시글정보
-				request.setAttribute("board_list", board_list);
-				rd.forward(request, response);
-			
-			}
-			
-			}
-			
+				 
+				
+				if (list != null) {
+					RequestDispatcher rd = request.getRequestDispatcher("/board/userPage.jsp");
+					request.setAttribute("naviMap", naviMap);
+					request.setAttribute("list", list); 
+					request.setAttribute("file_list", file_list); //사진정보+게시글정보
+					request.setAttribute("board_list", board_list);
+					request.setAttribute("mdto", mdto);
+					rd.forward(request, response);
+				
+				}
+				
+				
+				}catch(Exception e) {
+					e.printStackTrace();
+				}
+			    }else {
+			    	response.sendRedirect("/member/login.jsp");
+			    }
 			// 게시글 추가	
 		}else if (cmd.equals("/insertProc.bo")) {
 			// 아이디, 닉네임 값 가져오기
@@ -305,6 +314,7 @@ public class BoardController extends HttpServlet {
 				}
 
 			} catch (Exception e) {
+				response.sendRedirect("/error.jsp");
 				e.printStackTrace();
 			}
 
@@ -362,6 +372,7 @@ public class BoardController extends HttpServlet {
 				}
 
 			} catch (Exception e) {
+				response.sendRedirect("/error.jsp");
 				e.printStackTrace();
 			}
 
@@ -369,12 +380,15 @@ public class BoardController extends HttpServlet {
 		} else if (cmd.equals("/deleteProc.bo")) {
 			int post_no = Integer.parseInt(request.getParameter("post_no"));
 			System.out.println("삭제할 post_no : " + post_no);
-
+			try {
 			int rs = dao.deleteByPost(post_no);
 			if (rs != -1)
 				response.sendRedirect("/toUserPage.bo?currentPage=1");
 
-			
+			}catch(Exception e) {
+				response.sendRedirect("/error.jsp");
+				e.printStackTrace();
+			}
 		// 게시글 상세 조회(비로그인시 진입X)
 		} else if (cmd.equals("/toDetailPost.bo")) {
 			HashMap<String, String> map = (HashMap)session.getAttribute("loginSession");
@@ -386,10 +400,11 @@ public class BoardController extends HttpServlet {
 			// detailView.jsp 에 뿌려주기
 			int post_no = Integer.parseInt(request.getParameter("post_no"));
 			System.out.println("post_no : " + post_no);
-
+			try {
 			// 게시글 조회수 +1
 			dao.post_viewCount(post_no);
 
+			
 			BoardDTO dto = dao.selectBySeq(post_no);
 			FileDAO daoFile = new FileDAO();
 			FileDTO dtoFile = daoFile.getFileNames(post_no); // 파일 가져오는 작업
@@ -429,6 +444,7 @@ public class BoardController extends HttpServlet {
 				}
 				
 			} catch(Exception e) {
+				response.sendRedirect("/error.jsp");
 				e.printStackTrace();
 			}
 			
@@ -441,7 +457,11 @@ public class BoardController extends HttpServlet {
 				request.setAttribute("dtoFile", dtoFile);/*사진경로*/
 				rd.forward(request, response);
 			}
+		}catch(Exception e) {
+			response.sendRedirect("/error.jsp");
+			e.printStackTrace();
 		}
+			}
 		}
 		// 좋아요 처리
 		else if(cmd.equals("/goodCountProc.bo")) {
@@ -477,6 +497,7 @@ public class BoardController extends HttpServlet {
 				// 좋아요 수 반환
 				response.getWriter().write(Integer.toString(totalCount));
 			} catch(Exception e) {
+				response.sendRedirect("/error.jsp");
 				e.printStackTrace();
 			}
 		}
@@ -508,6 +529,7 @@ public class BoardController extends HttpServlet {
 					System.out.println("팔로우 처리 실패");
 				}
 			} catch(Exception e) {
+				response.sendRedirect("/error.jsp");
 				e.printStackTrace();
 			}
 		}
@@ -527,6 +549,7 @@ public class BoardController extends HttpServlet {
 				System.out.println(rs); // json데이터 확인
 				response.getWriter().write(rs);
 			} catch(Exception e) {
+				response.sendRedirect("/error.jsp");
 				e.printStackTrace();
 			}
 		}
@@ -546,6 +569,7 @@ public class BoardController extends HttpServlet {
 				System.out.println(rs); // json데이터 확인
 				response.getWriter().write(rs);
 			} catch(Exception e) {
+				response.sendRedirect("/error.jsp");
 				e.printStackTrace();
 			}
 		}
@@ -567,6 +591,7 @@ public class BoardController extends HttpServlet {
 					response.getWriter().write("false");
 				}
 			} catch(Exception e) {
+				response.sendRedirect("/error.jsp");
 				e.printStackTrace();
 			}
 		}else if (cmd.equals("/toSearchByIdOrNickname.bo")) {
@@ -577,6 +602,7 @@ public class BoardController extends HttpServlet {
 			try {
 				list = dao.getBoardByBoardInfo(inputVal);
 			} catch (Exception e) {
+				response.sendRedirect("/error.jsp");
 				e.printStackTrace();
 			}
 			request.setCharacterEncoding("utf-8");
@@ -594,7 +620,7 @@ public class BoardController extends HttpServlet {
 			/*
 			 * // 게시글 조회수 +1 dao.post_viewCount(post_no);
 			 */
-
+			try {
 			BoardDTO dto = dao.selectBySeq(post_no);
 			FileDAO daoFile = new FileDAO();
 			FileDTO dtoFile = daoFile.getFileNames(post_no); // 파일 가져오는 작업
@@ -606,6 +632,10 @@ public class BoardController extends HttpServlet {
 				request.setAttribute("daoFile", daoFile);
 				request.setAttribute("dtoFile", dtoFile);/* 사진경로 */
 				rd.forward(request, response);
+			}
+			}catch(Exception e) {
+				response.sendRedirect("/error.jsp");
+				e.printStackTrace();
 			}
 		}else if (cmd.equals("/toSearchByCategory.bo")) {
 			System.out.println("/toSearchByCategory.bo진입");
@@ -637,6 +667,7 @@ public class BoardController extends HttpServlet {
 					response.getWriter().write("true"); 
 				}
 			} catch (Exception e) {
+				response.sendRedirect("/error.jsp");
 				e.printStackTrace();
 			}
 		}
@@ -656,6 +687,7 @@ public class BoardController extends HttpServlet {
 						response.getWriter().write("fail");
 					}
 				} catch (Exception e) {
+					response.sendRedirect("/error.jsp");
 					e.printStackTrace();
 				}
 			}
